@@ -1,0 +1,57 @@
+Options -Indexes
+DirectoryIndex index.php index.html
+ServerSignature Off
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)$ [NC]
+  RewriteRule .* - [F,L]
+  RewriteRule ^robots\.txt$ robots.php [L]
+  RewriteRule ^sitemap\.xml$ sitemap.php [L]
+  RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html(?:[?\s]) [NC]
+  RewriteRule ^index\.html$ ./ [R=301,L]
+</IfModule>
+
+<FilesMatch "(^\.|\.(md|sql|log|bak|ini|env|sh|dist|map)$)">
+  Require all denied
+</FilesMatch>
+<FilesMatch "^(README|RBAC|RBAC_AUDIT|AUTH_AUDIT|AUTH_PROFILE_PAGES|USER_AUTH|DATA_FLOW_AUDIT|CHANGELOG_RBAC|REDESIGN_CHANGELOG|FINAL_AUDIT)(\.md)?$">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  Header always unset X-Powered-By
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  Header always set Cross-Origin-Resource-Policy "same-origin"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self'; frame-src https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+  <FilesMatch "^(login|register|profile)\.html$">
+    Header always set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header always set Pragma "no-cache"
+    Header always set X-Robots-Tag "noindex, nofollow, noarchive"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_setenvif.c>
+  SetEnvIfExpr "%{HTTPS} == 'on'" HTTPS_ACTIVE
+</IfModule>
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS_ACTIVE
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json application/xml image/svg+xml
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+</IfModule>

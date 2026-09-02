@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#087352">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex,nofollow">
+  <script>
+    (()=>{try{
+      const saved=localStorage.getItem('gampong-theme');
+      const theme=saved==='dark'||saved==='light'?saved:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.dataset.theme=theme;
+      const meta=document.querySelector('meta[name="theme-color"]');
+      if(meta)meta.setAttribute('content',theme==='dark'?'#09130f':'#087352');
+    }catch(_){}})();
+  </script>
+  <title>Masuk · Portal Gampong</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/redesign.css">
+  <link rel="stylesheet" href="assets/css/account-pages.css">
+</head>
+<body class="account-page" data-auth-page="login">
+  <main class="auth-page-shell">
+    <section class="auth-side-panel" aria-label="Informasi portal">
+      <a class="auth-page-brand" href="./">
+        <span class="brand-mark" id="authBrandMark">PG</span>
+        <span><strong id="authBrandName">Portal Gampong</strong><small id="authBrandLocation">Website publik tetap dapat diakses sebagai guest</small></span>
+      </a>
+      <div class="auth-side-copy">
+        <span class="auth-kicker"><i data-lucide="shield-check"></i> Akses akun</span>
+        <h1>Masuk ke Portal Gampong.</h1>
+        <p>Gunakan akun yang telah terdaftar. Sistem akan membuka halaman yang sesuai secara otomatis tanpa menampilkan struktur akses internal.</p>
+        <ul class="auth-benefits">
+          <li><i data-lucide="lock-keyhole"></i><span>Autentikasi dan hak akses diverifikasi oleh server.</span></li>
+          <li><i data-lucide="history"></i><span>Akun warga dapat menyimpan riwayat layanan.</span></li>
+          <li><i data-lucide="globe-2"></i><span>Informasi publik tetap dapat diakses tanpa login.</span></li>
+        </ul>
+      </div>
+      <p class="auth-side-note"><i data-lucide="globe-2"></i> Login tidak wajib untuk membaca informasi publik atau menggunakan layanan yang tersedia untuk pengunjung.</p>
+    </section>
+
+    <section class="auth-form-panel">
+      <div class="auth-toolbar">
+        <a class="auth-back" href="./"><i data-lucide="arrow-left"></i> Kembali ke website</a>
+        <button class="auth-theme-button" id="pageThemeButton" type="button" aria-label="Ubah tema"><i data-lucide="moon"></i></button>
+      </div>
+      <div class="auth-form-wrap">
+        <div class="auth-form-heading">
+          <span class="eyebrow">Autentikasi Portal</span>
+          <h2>Masuk</h2>
+          <p>Gunakan email dan password akun yang telah terdaftar.</p>
+        </div>
+        <form id="loginPageForm" class="account-form">
+          <label>Email
+            <div class="field-with-icon"><i data-lucide="mail"></i><input type="email" name="email" autocomplete="username" required placeholder="nama@email.com"></div>
+          </label>
+          <label>Password
+            <div class="field-with-icon password-field"><i data-lucide="lock-keyhole"></i><input id="loginPassword" type="password" name="password" autocomplete="current-password" required placeholder="Password"><button class="password-toggle" type="button" data-toggle-password="loginPassword" aria-label="Lihat password"><i data-lucide="eye"></i></button></div>
+          </label>
+          <button class="btn btn-primary auth-submit" type="submit"><i data-lucide="log-in"></i> Masuk ke Portal</button>
+          <p id="authMessage" class="account-message" aria-live="polite"></p>
+        </form>
+        <div class="auth-separator"><span>atau</span></div>
+        <p class="auth-switch-page">Belum punya akun warga? <a href="register.html">Daftar akun warga</a></p>
+        <div class="auth-security-note"><i data-lucide="info"></i><span>Akses portal ditentukan dan diverifikasi oleh server.</span></div>
+      </div>
+    </section>
+  </main>
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/js/auth-pages.js"></script>
+</body>
+</html>

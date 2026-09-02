@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="t">
+<title id="t">Placeholder galeri</title>
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#123b2e"/><stop offset="1" stop-color="#2c775d"/></linearGradient></defs>
+<rect width="1200" height="800" fill="url(#g)"/><circle cx="970" cy="150" r="220" fill="#fff" opacity=".05"/><path d="M220 610l190-220 130 135 125-145 315 300H220z" fill="#fff" opacity=".14"/><circle cx="415" cy="280" r="55" fill="#d3a646" opacity=".75"/><text x="600" y="720" text-anchor="middle" fill="#fff" opacity=".72" font-family="Arial,sans-serif" font-size="30" font-weight="700">GALERI BELUM DIISI</text>
+</svg>

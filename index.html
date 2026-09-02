@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b6b4f">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <script>
+    (()=>{
+      try{
+        const saved=localStorage.getItem('gampong-theme');
+        const theme=saved==='dark'||saved==='light'?saved:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+        document.documentElement.dataset.theme=theme;
+        document.querySelector('meta[name="theme-color"]').setAttribute('content',theme==='dark'?'#09130f':'#087352');
+      }catch(_){}
+    })();
+  </script>
+  <meta id="metaDescription" name="description" content="Portal informasi dan layanan gampong.">
+  <meta id="metaKeywords" name="keywords" content="">
+  <meta id="ogTitle" property="og:title" content="Portal Gampong">
+  <meta id="ogUrl" property="og:url" content="">
+  <meta id="ogSiteName" property="og:site_name" content="Portal Gampong">
+  <meta property="og:locale" content="id_ID">
+  <meta id="ogDescription" property="og:description" content="Portal informasi dan layanan gampong.">
+  <meta property="og:type" content="website">
+  <meta id="ogImage" property="og:image" content="">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta id="twitterTitle" name="twitter:title" content="Portal Gampong">
+  <meta id="twitterDescription" name="twitter:description" content="Portal informasi dan layanan gampong.">
+  <meta id="twitterImage" name="twitter:image" content="">
+  <link id="canonicalLink" rel="canonical" href="">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+  <!--SEO_HEAD-->
+  <title>Portal Gampong</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/redesign.css">
+  <link rel="manifest" href="manifest.php">
+</head>
+<body>
+  <a class="skip-link" href="#main">Lewati ke konten utama</a>
+
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <div class="topbar-left">
+        <span id="topbarLocation"><i data-lucide="map-pin"></i><b data-empty-text>Lokasi belum diisi</b></span>
+        <span class="topbar-hours" id="topbarHours"><i data-lucide="clock-3"></i><b data-empty-text>Jam pelayanan belum diisi</b></span>
+      </div>
+      <div class="topbar-actions" aria-label="Aksesibilitas">
+        <button class="icon-button small" id="fontDecrease" aria-label="Perkecil teks">A−</button>
+        <button class="icon-button small" id="fontReset" aria-label="Ukuran teks normal">A</button>
+        <button class="icon-button small" id="fontIncrease" aria-label="Perbesar teks">A+</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header" id="siteHeader">
+    <div class="container nav-wrap">
+      <a class="brand" href="#beranda" aria-label="Beranda">
+        <span class="brand-mark" id="brandMark">PG</span>
+        <span>
+          <strong id="brandName">Portal Gampong</strong>
+          <small id="brandLocation">Data wilayah belum diisi</small>
+        </span>
+      </a>
+      <nav class="desktop-nav" aria-label="Navigasi utama">
+        <a href="#beranda" class="nav-link active">Beranda</a>
+        <a href="#profil" class="nav-link">Profil</a>
+        <a href="#layanan" class="nav-link">Layanan</a>
+        <a href="#data" class="nav-link">Data</a>
+        <a href="#transparansi" class="nav-link">Transparansi</a>
+        <a href="#berita" class="nav-link">Berita</a>
+        <a href="#galeri" class="nav-link">Galeri</a>
+        <a href="#kontak" class="nav-link">Kontak</a>
+      </nav>
+      <div class="nav-actions">
+        <div class="auth-nav" id="guestAuthNav">
+          <a class="nav-auth-button ghost" id="loginButton" href="login.html"><i data-lucide="log-in"></i><span>Masuk</span></a>
+          <a class="nav-auth-button primary" id="registerButton" href="register.html"><i data-lucide="user-plus"></i><span>Daftar</span></a>
+        </div>
+        <div class="auth-nav hidden" id="memberAuthNav">
+          <a class="nav-auth-button account" id="accountButton" href="profile.html"><i data-lucide="circle-user-round"></i><span id="accountNavLabel">Akun Saya</span></a>
+          <button class="icon-button" id="authLogoutButton" aria-label="Keluar"><i data-lucide="log-out"></i></button>
+        </div>
+        <button class="icon-button" id="searchButton" aria-label="Cari"><i data-lucide="search"></i></button>
+        <button class="icon-button" id="themeButton" aria-label="Ubah tema"><i data-lucide="moon"></i></button>
+        <button class="icon-button menu-button" id="menuButton" aria-label="Buka menu"><i data-lucide="menu"></i></button>
+      </div>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="container mobile-menu-inner">
+        <a href="#beranda">Beranda</a><a href="#profil">Profil Gampong</a><a href="#layanan">Layanan Publik</a><a href="#data">Data Gampong</a><a href="#transparansi">Transparansi</a><a href="#berita">Berita & Agenda</a><a href="#galeri">Galeri</a><a href="#kontak">Kontak</a>
+        <div class="mobile-auth-row" id="mobileGuestAuth"><a id="mobileLoginButton" href="login.html"><i data-lucide="log-in"></i> Masuk</a><a id="mobileRegisterButton" href="register.html"><i data-lucide="user-plus"></i> Daftar Warga</a></div>
+        <div class="mobile-auth-row hidden" id="mobileMemberAuth"><a id="mobileAccountButton" href="profile.html"><i data-lucide="circle-user-round"></i> <span id="mobileAccountLabel">Akun Saya</span></a><button id="mobileLogoutButton"><i data-lucide="log-out"></i> Keluar</button></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="announcement hidden-section" id="announcementBar" role="region" aria-label="Pengumuman penting">
+    <div class="container announcement-inner">
+      <span class="announcement-label"><i data-lucide="megaphone"></i> Pengumuman</span>
+      <div class="ticker"><span id="tickerText"></span></div>
+      <a href="#pengumuman">Lihat semua <i data-lucide="arrow-right"></i></a>
+    </div>
+  </div>
+
+  <main id="main">
+    <section class="hero" id="beranda">
+      <div class="hero-bg" id="heroBg" aria-hidden="true"></div>
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <span class="eyebrow" id="heroEyebrow"><i data-lucide="landmark"></i> Portal Gampong</span>
+          <h1 id="heroTitle">Informasi gampong akan tampil setelah diisi dari dashboard admin.</h1>
+          <p id="heroSubtitle">Tidak ada data contoh yang ditampilkan.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#layanan"><i data-lucide="file-check-2"></i> Ajukan Layanan</a>
+            <a class="btn btn-secondary" href="#profil"><i data-lucide="circle-play"></i> Lihat Profil</a>
+          </div>
+          <div class="hero-meta" id="heroStats"><div class="empty-inline">Statistik unggulan belum diisi.</div></div>
+        </div>
+
+        <aside class="keuchik-card reveal hidden-section" id="keuchikCard" aria-label="Profil pimpinan gampong">
+          <div class="keuchik-photo-wrap">
+            <img id="keuchikPhoto" src="assets/images/geuchik-placeholder.svg" alt="Foto pimpinan gampong">
+            <span class="status-badge"><span></span><b id="keuchikBadge">Pimpinan Gampong</b></span>
+          </div>
+          <div class="keuchik-body">
+            <span class="mini-label" id="keuchikTitle">Pimpinan Gampong</span>
+            <h2 id="keuchikName"></h2>
+            <p id="keuchikMessage"></p>
+            <div class="keuchik-links"><a href="#pemerintahan"><i data-lucide="network"></i> Struktur Pemerintahan</a><a href="#kontak"><i data-lucide="map-pin"></i> Kontak Kantor</a></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="quick-access hidden-section" id="quickAccessSection">
+      <div class="container"><div class="quick-grid" id="quickLinksGrid"></div></div>
+    </section>
+
+    <section class="section" id="profil">
+      <div class="container">
+        <div class="section-heading reveal"><div><span class="eyebrow">Profil Gampong</span><h2 id="profileHeading">Profil belum diisi</h2></div><p id="profileSummary">Lengkapi profil dari Dashboard Admin.</p></div>
+        <div class="profile-layout">
+          <article class="story-card reveal">
+            <div class="story-photo empty-media" id="profilePhotoWrap"><div class="empty-media-label">Foto profil belum diunggah</div></div>
+            <div class="story-content"><span class="mini-label">Tentang Gampong</span><h3 id="profileStoryTitle">Informasi profil</h3><p id="profileHistory">Belum ada deskripsi profil yang dipublikasikan.</p></div>
+          </article>
+          <div class="vision-grid reveal" id="visionGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-muted" id="pemerintahan">
+      <div class="container">
+        <div class="section-heading reveal"><div><span class="eyebrow">Pemerintahan</span><h2 id="governmentHeading">Struktur pemerintahan</h2></div><p id="governmentSummary">Data perangkat dan lembaga dikelola melalui dashboard admin.</p></div>
+        <div class="subsection-title"><h3>Perangkat Gampong</h3></div>
+        <div class="leadership-grid" id="officialsGrid"><div class="empty-card">Belum ada perangkat gampong yang dipublikasikan.</div></div>
+        <div class="subsection-title institutions-title"><h3>Lembaga Gampong</h3></div>
+        <div class="leadership-grid" id="institutionsGrid"><div class="empty-card">Belum ada lembaga gampong yang dipublikasikan.</div></div>
+      </div>
+    </section>
+
+    <section class="section" id="layanan">
+      <div class="container">
+        <div class="section-heading reveal"><div><span class="eyebrow">Layanan Publik</span><h2 id="servicesHeading">Layanan gampong</h2><p id="servicesSummary"></p></div><div class="filter-tabs" id="serviceFilters"></div></div>
+        <div class="services-grid" id="servicesGrid"><div class="empty-card">Belum ada layanan yang dipublikasikan.</div></div>
+        <div class="online-service reveal hidden-section" id="onlineServiceBox"><div><span class="eyebrow">Layanan Digital</span><h3>Pengajuan layanan online</h3><p>Pilih layanan yang tersedia, isi data, dan simpan nomor tiket untuk memantau prosesnya.</p></div><button class="btn btn-primary" id="openRequestForm"><i data-lucide="send"></i> Mulai Pengajuan</button></div>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="data">
+      <div class="container">
+        <div class="section-heading light reveal"><div><span class="eyebrow">Data Gampong</span><h2 id="dataHeading">Statistik gampong</h2></div><p id="dataSummary">Statistik yang dipublikasikan admin akan muncul di bagian ini.</p></div>
+        <div class="stats-grid" id="statsGrid"><div class="empty-card dark-empty">Belum ada statistik yang dipublikasikan.</div></div>
+        <div class="data-panels hidden-section" id="dataPanels">
+          <article class="chart-card reveal hidden-section" id="genderChartCard"><div class="card-head"><div><span class="mini-label">Komposisi Penduduk</span><h3 id="genderChartTitle">Penduduk menurut jenis kelamin</h3></div></div><div class="donut-wrap"><div class="donut" id="genderDonut"><div class="donut-center"><strong id="genderTotal">0</strong><span>jiwa</span></div></div><div class="legend" id="genderLegend"></div></div></article>
+          <article class="chart-card reveal"><div class="card-head"><div><span class="mini-label">Ringkasan</span><h3>Informasi wilayah</h3></div></div><div class="facts-list" id="factsList"></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="transparansi">
+      <div class="container">
+        <div class="section-heading reveal"><div><span class="eyebrow">Transparansi</span><h2 id="transparencyHeading">APBG dan pembangunan</h2></div><p id="transparencySummary">Data yang telah dipublikasikan admin akan ditampilkan tanpa nilai contoh.</p></div>
+        <div class="budget-layout">
+          <article class="budget-summary reveal" id="budgetSummary"><div class="empty-card">Belum ada data APBG yang dipublikasikan.</div></article>
+          <div class="development-list reveal" id="developmentList"><div class="empty-card">Belum ada data pembangunan yang dipublikasikan.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-muted" id="berita">
+      <div class="container">
+        <div class="section-heading reveal"><div><span class="eyebrow">Informasi Terkini</span><h2 id="newsHeading">Berita, pengumuman, dan agenda</h2><p id="newsSummary"></p></div><div class="segmented" id="contentTabs"><button class="active" data-tab="news">Berita</button><button data-tab="announcement">Pengumuman</button><button data-tab="agenda">Agenda</button></div></div>
+        <div class="news-grid content-panel active" data-panel="news" id="newsGrid"><div class="empty-card">Belum ada berita yang dipublikasikan.</div></div>
+        <div class="content-panel" data-panel="announcement" id="pengumuman"><div class="notice-list" id="announcementList"><div class="empty-card">Belum ada pengumuman yang dipublikasikan.</div></div></div>
+        <div class="content-panel" data-panel="agenda" id="agenda"><div class="agenda-grid" id="agendaGrid"><div class="empty-card">Belum ada agenda yang dipublikasikan.</div></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="umkm">
+      <div class="container"><div class="section-heading reveal"><div><span class="eyebrow">Potensi Gampong</span><h2 id="umkmHeading">UMKM dan ekonomi lokal</h2></div><p id="umkmSummary"></p></div><div class="umkm-grid" id="umkmGrid"><div class="empty-card">Belum ada UMKM yang dipublikasikan.</div></div></div>
+    </section>
+
+    <section class="section section-muted" id="galeri">
+      <div class="container"><div class="section-heading reveal"><div><span class="eyebrow">Galeri</span><h2 id="galleryHeading">Dokumentasi gampong</h2></div><p id="gallerySummary"></p></div><div class="gallery-grid" id="galleryGrid"><div class="empty-card">Belum ada galeri yang dipublikasikan.</div></div></div>
+    </section>
+
+    <section class="section" id="pengaduan">
+      <div class="container"><div class="complaint-wrap reveal"><div class="complaint-copy"><span class="eyebrow">Aspirasi & Pengaduan</span><h2 id="complaintHeading">Sampaikan aspirasi atau pengaduan</h2><p id="complaintSummary"></p><div class="complaint-points"><span><i data-lucide="shield-check"></i> Data dikirim ke backend</span><span><i data-lucide="ticket-check"></i> Nomor tiket otomatis</span><span><i data-lucide="lock-keyhole"></i> Informasi sensitif terenkripsi</span></div></div>
+      <form class="complaint-form" id="complaintForm"><label>Nama<input type="text" name="name" placeholder="Nama lengkap" required></label><div class="form-row"><label>Kategori<select name="category" id="complaintCategory" required><option value="">Belum ada kategori</option></select></label><label>Kontak<input type="text" name="contact" placeholder="Nomor HP / email" required></label></div><label>Isi aspirasi / pengaduan<textarea name="message" rows="5" placeholder="Jelaskan informasi yang relevan." required minlength="10"></textarea></label><label class="checkbox-label"><input type="checkbox" name="private"><span>Jaga identitas saya agar tidak ditampilkan di publik.</span></label><button class="btn btn-primary" type="submit"><i data-lucide="send"></i> Kirim Pengaduan</button></form></div></div>
+    </section>
+
+    <section class="section section-muted" id="faq">
+      <div class="container narrow"><div class="section-heading center reveal"><div><span class="eyebrow">Pertanyaan Umum</span><h2 id="faqHeading">FAQ</h2><p id="faqSummary"></p></div></div><div class="faq-list" id="faqList"><div class="empty-card">Belum ada FAQ yang dipublikasikan.</div></div></div>
+    </section>
+
+    <section class="section contact-section" id="kontak">
+      <div class="container"><div class="contact-grid"><div class="contact-info reveal"><span class="eyebrow">Kontak & Lokasi</span><h2 id="contactHeading">Kontak kantor gampong</h2><p id="contactSummary"></p><div class="contact-list" id="contactList"><div class="empty-card">Informasi kontak belum diisi.</div></div><div class="contact-actions" id="contactActions"></div><div class="social-row" id="socialLinks"></div></div><div class="map-card reveal hidden-section" id="mapCard"><iframe id="mapFrame" title="Peta kantor gampong" src="about:blank" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div></div></div>
+    </section>
+
+    <section class="source-strip hidden-section" id="sourceStrip"><div class="container source-strip-inner"><div><i data-lucide="badge-check"></i><p><strong>Sumber data:</strong> <span id="sourceSummary"></span></p></div><button class="text-button" id="sourceButton">Lihat sumber <i data-lucide="arrow-right"></i></button></div></section>
+  </main>
+
+  <footer class="footer"><div class="container footer-grid"><div class="footer-brand"><a class="brand light" href="#beranda"><span class="brand-mark" id="footerBrandMark">PG</span><span><strong id="footerBrandName">Portal Gampong</strong><small id="footerBrandLocation">Data wilayah belum diisi</small></span></a><p id="footerDescription"></p></div><div><h3>Navigasi</h3><a href="#profil">Profil Gampong</a><a href="#pemerintahan">Pemerintahan</a><a href="#data">Data Gampong</a><a href="#transparansi">Transparansi</a></div><div><h3>Layanan</h3><a href="#layanan">Layanan Surat</a><a href="#pengaduan">Aspirasi & Pengaduan</a><a href="#agenda">Agenda</a><a href="#umkm">UMKM</a></div><div><h3>Tautan</h3><div id="footerExternalLinks"><span class="footer-empty">Belum ada tautan eksternal.</span></div></div></div><div class="container footer-bottom"><p>© <span id="year"></span> <span id="copyrightName">Portal Gampong</span>.</p><p>Konten dikelola melalui Dashboard Admin.</p></div></footer>
+
+  <button class="back-to-top" id="backToTop" aria-label="Kembali ke atas"><i data-lucide="arrow-up"></i></button>
+
+  <div class="search-modal" id="searchModal" aria-hidden="true"><div class="modal-backdrop" data-close-modal></div><div class="search-dialog" role="dialog" aria-modal="true" aria-labelledby="searchTitle"><div class="search-head"><div><span class="mini-label">Pencarian Cepat</span><h2 id="searchTitle">Cari informasi gampong</h2></div><button class="icon-button" data-close-modal aria-label="Tutup pencarian"><i data-lucide="x"></i></button></div><div class="search-input-wrap"><i data-lucide="search"></i><input id="siteSearch" type="search" placeholder="Cari layanan, berita, agenda, FAQ..." autocomplete="off"><kbd>ESC</kbd></div><div class="search-results" id="searchResults"><p class="empty-state">Ketik kata kunci untuk mencari data yang sudah dipublikasikan.</p></div></div></div>
+
+  <div class="modal" id="serviceModal" aria-hidden="true"><div class="modal-backdrop" data-close-service></div><div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="serviceModalTitle"><button class="modal-close icon-button" data-close-service aria-label="Tutup"><i data-lucide="x"></i></button><span class="eyebrow">Informasi Layanan</span><h2 id="serviceModalTitle">Layanan</h2><div id="serviceModalContent"></div><button class="btn btn-primary" id="serviceApplyButton"><i data-lucide="send"></i> Ajukan Layanan</button></div></div>
+
+  <div class="modal" id="postModal" aria-hidden="true"><div class="modal-backdrop" data-close-post></div><div class="modal-dialog wide" role="dialog" aria-modal="true" aria-labelledby="postModalTitle"><button class="modal-close icon-button" data-close-post aria-label="Tutup"><i data-lucide="x"></i></button><span class="eyebrow" id="postModalCategory">Informasi</span><h2 id="postModalTitle">Detail Informasi</h2><div id="postModalMeta" class="modal-intro"></div><div id="postModalContent" class="article-content"></div><div id="postModalActions"></div></div></div>
+
+  <div class="modal" id="requestModal" aria-hidden="true"><div class="modal-backdrop" data-close-request></div><div class="modal-dialog wide" role="dialog" aria-modal="true" aria-labelledby="requestModalTitle"><button class="modal-close icon-button" data-close-request aria-label="Tutup"><i data-lucide="x"></i></button><span class="eyebrow">Formulir Digital</span><h2 id="requestModalTitle">Pengajuan Layanan</h2><form id="requestForm" class="request-form"><div class="form-row"><label>Nama lengkap<input type="text" name="name" required placeholder="Nama sesuai identitas"></label><label>NIK<input type="text" name="nik" inputmode="numeric" maxlength="16" pattern="[0-9]{16}" required placeholder="16 digit NIK"></label></div><div class="form-row"><label>Jenis layanan<select name="service" id="requestService" required><option value="">Belum ada layanan online</option></select></label><label>Nomor WhatsApp / HP<input type="tel" name="phone" required placeholder="08xxxxxxxxxx"></label></div><label>Alamat<textarea name="address" rows="3" required placeholder="Alamat"></textarea></label><label>Catatan<textarea name="notes" rows="3" placeholder="Keterangan tambahan bila ada"></textarea></label><label class="file-label">Dokumen pendukung<input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png"><small>PDF/JPG/PNG maksimal 5 MB.</small></label><label class="checkbox-label"><input type="checkbox" required><span>Saya memastikan data yang diisi benar.</span></label><button class="btn btn-primary" type="submit"><i data-lucide="send"></i> Kirim Pengajuan</button></form></div></div>
+
+  <div class="modal" id="statusModal" aria-hidden="true"><div class="modal-backdrop" data-close-status></div><div class="modal-dialog" role="dialog" aria-modal="true"><button class="modal-close icon-button" data-close-status aria-label="Tutup"><i data-lucide="x"></i></button><span class="mini-label">Lacak Layanan</span><h2>Cek status tiket</h2><form id="statusForm" class="request-form"><label>Nomor tiket<input name="ticket" required placeholder="Masukkan nomor tiket"></label><button class="btn btn-primary" type="submit"><i data-lucide="search-check"></i> Cek Status</button></form><div id="statusResult"></div></div></div>
+
+  <button class="status-floating" id="statusButton"><i data-lucide="scan-search"></i><span>Cek Tiket</span></button>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true"><button class="icon-button lightbox-close" id="lightboxClose" aria-label="Tutup galeri"><i data-lucide="x"></i></button><img id="lightboxImage" src="" alt=""><p id="lightboxCaption"></p></div>
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

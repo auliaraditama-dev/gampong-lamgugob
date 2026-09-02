@@ -1,0 +1,323 @@
+SET NAMES utf8mb4;
+
+CREATE TABLE IF NOT EXISTS admins (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  role ENUM('superadmin','admin','operator') NOT NULL DEFAULT 'admin',
+  last_login_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS users (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  role ENUM('user') NOT NULL DEFAULT 'user',
+  nik_cipher TEXT NULL,
+  nik_hash CHAR(64) NULL UNIQUE,
+  nik_last4 CHAR(4) NULL,
+  phone_cipher TEXT NULL,
+  address_cipher TEXT NULL,
+  is_verified TINYINT(1) NOT NULL DEFAULT 0,
+  status ENUM('active','blocked') NOT NULL DEFAULT 'active',
+  last_login_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_users_status (status),
+  INDEX idx_users_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS settings (
+  setting_key VARCHAR(100) PRIMARY KEY,
+  setting_value LONGTEXT NULL,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS government_officials (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(180) NOT NULL,
+  position VARCHAR(180) NOT NULL,
+  description TEXT NULL,
+  photo_url TEXT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_official_sort (is_published, sort_order, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS institutions (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(180) NOT NULL,
+  short_name VARCHAR(80) NULL,
+  description TEXT NULL,
+  icon VARCHAR(80) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_institution_sort (is_published, sort_order, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS services (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(180) NOT NULL,
+  category VARCHAR(120) NOT NULL,
+  description TEXT NULL,
+  icon VARCHAR(80) NULL,
+  estimated_time VARCHAR(120) NULL,
+  flow_text LONGTEXT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_online TINYINT(1) NOT NULL DEFAULT 1,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_service_public (is_published, sort_order, id),
+  INDEX idx_service_category (category)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS service_requirements (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  service_id BIGINT UNSIGNED NOT NULL,
+  requirement_text TEXT NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_requirement_service FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE,
+  INDEX idx_requirement_service (service_id, sort_order, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS population_statistics (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  stat_key VARCHAR(100) NOT NULL UNIQUE,
+  label VARCHAR(180) NOT NULL,
+  stat_value DECIMAL(20,2) NOT NULL DEFAULT 0,
+  unit VARCHAR(80) NULL,
+  data_year SMALLINT UNSIGNED NULL,
+  icon VARCHAR(80) NULL,
+  is_featured TINYINT(1) NOT NULL DEFAULT 0,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_population_public (is_published, sort_order, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS posts (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  type ENUM('news','announcement') NOT NULL DEFAULT 'news',
+  title VARCHAR(220) NOT NULL,
+  slug VARCHAR(240) NOT NULL UNIQUE,
+  excerpt TEXT NULL,
+  content LONGTEXT NULL,
+  category VARCHAR(100) NULL,
+  image_url TEXT NULL,
+  source_url TEXT NULL,
+  published_at DATETIME NULL,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_posts_type_date (type, published_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS agendas (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(220) NOT NULL,
+  category VARCHAR(100) NULL,
+  description TEXT NULL,
+  location VARCHAR(220) NULL,
+  start_at DATETIME NOT NULL,
+  end_at DATETIME NULL,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_agenda_start (start_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS umkm (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(180) NOT NULL,
+  category VARCHAR(100) NOT NULL,
+  description TEXT NULL,
+  owner_name VARCHAR(150) NULL,
+  contact VARCHAR(80) NULL,
+  address TEXT NULL,
+  image_url TEXT NULL,
+  is_verified TINYINT(1) NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_umkm_category (category)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS galleries (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(180) NOT NULL,
+  caption TEXT NULL,
+  image_url TEXT NOT NULL,
+  event_date DATE NULL,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS budget_items (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  budget_year SMALLINT UNSIGNED NOT NULL,
+  field_name VARCHAR(180) NOT NULL,
+  budget_amount DECIMAL(18,2) NOT NULL DEFAULT 0,
+  realization_amount DECIMAL(18,2) NOT NULL DEFAULT 0,
+  description TEXT NULL,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_budget_year (budget_year)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS development_projects (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(220) NOT NULL,
+  category VARCHAR(120) NULL,
+  description TEXT NULL,
+  location VARCHAR(220) NULL,
+  budget_amount DECIMAL(18,2) NULL,
+  progress_percent DECIMAL(5,2) NOT NULL DEFAULT 0,
+  status VARCHAR(100) NULL,
+  start_date DATE NULL,
+  end_date DATE NULL,
+  image_url TEXT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_dev_public (is_published, sort_order, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS faqs (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  question VARCHAR(300) NOT NULL,
+  answer LONGTEXT NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_faq_public (is_published, sort_order, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS quick_links (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(120) NOT NULL,
+  subtitle VARCHAR(180) NULL,
+  url VARCHAR(500) NOT NULL,
+  icon VARCHAR(80) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_quick_public (is_published, sort_order, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS social_links (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  platform VARCHAR(100) NOT NULL,
+  label VARCHAR(150) NULL,
+  url VARCHAR(500) NOT NULL,
+  icon VARCHAR(80) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_social_public (is_published, sort_order, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS external_links (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  label VARCHAR(180) NOT NULL,
+  url VARCHAR(500) NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_external_public (is_published, sort_order, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS data_sources (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(220) NOT NULL,
+  description TEXT NULL,
+  url VARCHAR(500) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_source_public (is_published, sort_order, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS service_requests (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NULL,
+  ticket VARCHAR(40) NOT NULL UNIQUE,
+  name VARCHAR(150) NOT NULL,
+  nik_cipher TEXT NOT NULL,
+  nik_last4 CHAR(4) NOT NULL,
+  service VARCHAR(150) NOT NULL,
+  phone_cipher TEXT NOT NULL,
+  address_cipher TEXT NOT NULL,
+  notes_cipher LONGTEXT NULL,
+  status ENUM('pending','verified','processing','completed','rejected') NOT NULL DEFAULT 'pending',
+  admin_note TEXT NULL,
+  file_stored_name VARCHAR(190) NULL,
+  file_original_name VARCHAR(190) NULL,
+  file_mime VARCHAR(100) NULL,
+  file_size INT UNSIGNED NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_service_user (user_id),
+  INDEX idx_service_status (status),
+  INDEX idx_service_created (created_at),
+  CONSTRAINT fk_service_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS complaints (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NULL,
+  ticket VARCHAR(40) NOT NULL UNIQUE,
+  name_cipher TEXT NOT NULL,
+  contact_cipher TEXT NOT NULL,
+  category VARCHAR(100) NOT NULL,
+  message_cipher LONGTEXT NOT NULL,
+  is_private TINYINT(1) NOT NULL DEFAULT 0,
+  status ENUM('new','reviewed','in_progress','resolved','closed') NOT NULL DEFAULT 'new',
+  admin_note TEXT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_complaint_user (user_id),
+  INDEX idx_complaint_status (status),
+  INDEX idx_complaint_created (created_at),
+  CONSTRAINT fk_complaint_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS rate_limits (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  ip_hash CHAR(64) NOT NULL,
+  action_name VARCHAR(80) NOT NULL,
+  hits INT UNSIGNED NOT NULL DEFAULT 1,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uniq_rate (ip_hash, action_name),
+  INDEX idx_rate_updated (updated_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS audit_logs (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  admin_id INT UNSIGNED NULL,
+  action_name VARCHAR(80) NOT NULL,
+  entity_type VARCHAR(80) NOT NULL,
+  entity_id BIGINT UNSIGNED NULL,
+  meta_json LONGTEXT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_audit_created (created_at),
+  CONSTRAINT fk_audit_admin FOREIGN KEY (admin_id) REFERENCES admins(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

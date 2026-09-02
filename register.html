@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#087352">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex,nofollow">
+  <script>
+    (()=>{try{
+      const saved=localStorage.getItem('gampong-theme');
+      const theme=saved==='dark'||saved==='light'?saved:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.dataset.theme=theme;
+      const meta=document.querySelector('meta[name="theme-color"]');
+      if(meta)meta.setAttribute('content',theme==='dark'?'#09130f':'#087352');
+    }catch(_){}})();
+  </script>
+  <title>Daftar Warga · Portal Gampong</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/redesign.css">
+  <link rel="stylesheet" href="assets/css/account-pages.css">
+</head>
+<body class="account-page" data-auth-page="register">
+  <main class="auth-page-shell register-layout">
+    <section class="auth-side-panel" aria-label="Informasi registrasi">
+      <a class="auth-page-brand" href="./">
+        <span class="brand-mark" id="authBrandMark">PG</span>
+        <span><strong id="authBrandName">Portal Gampong</strong><small id="authBrandLocation">Registrasi akun warga</small></span>
+      </a>
+      <div class="auth-side-copy">
+        <span class="auth-kicker"><i data-lucide="user-plus"></i> Akun Warga</span>
+        <h1>Simpan riwayat layanan dalam satu akun.</h1>
+        <p>Akun warga memudahkan pengisian formulir, melihat pengajuan dan pengaduan yang terkait, serta memperbarui profil Anda.</p>
+        <ul class="auth-benefits">
+          <li><i data-lucide="wand-sparkles"></i><span>Data profil otomatis mengisi formulir layanan.</span></li>
+          <li><i data-lucide="history"></i><span>Riwayat pengajuan dan pengaduan tersimpan pada akun.</span></li>
+          <li><i data-lucide="lock-keyhole"></i><span>NIK dan data sensitif diproses melalui backend, bukan localStorage.</span></li>
+          <li><i data-lucide="globe-2"></i><span>Website tetap bisa digunakan tanpa akun.</span></li>
+        </ul>
+      </div>
+      <p class="auth-side-note"><i data-lucide="shield"></i> Registrasi publik membuat akun layanan warga dengan akses yang ditetapkan otomatis oleh server.</p>
+    </section>
+
+    <section class="auth-form-panel">
+      <div class="auth-toolbar">
+        <a class="auth-back" href="./"><i data-lucide="arrow-left"></i> Kembali ke website</a>
+        <button class="auth-theme-button" id="pageThemeButton" type="button" aria-label="Ubah tema"><i data-lucide="moon"></i></button>
+      </div>
+      <div class="auth-form-wrap auth-form-wide">
+        <div class="auth-form-heading">
+          <span class="eyebrow">Registrasi</span>
+          <h2>Daftar Akun Warga</h2>
+          <p>Data opsional dapat dilengkapi sekarang atau nanti dari halaman profil.</p>
+        </div>
+        <form id="registerPageForm" class="account-form">
+          <div class="account-form-row">
+            <label>Nama lengkap<input name="name" required maxlength="150" autocomplete="name" placeholder="Nama sesuai identitas"></label>
+            <label>Email<input type="email" name="email" required maxlength="190" autocomplete="email" placeholder="nama@email.com"></label>
+          </div>
+          <div class="account-form-row">
+            <label>NIK <small>Opsional · 16 digit</small><input name="nik" inputmode="numeric" maxlength="16" pattern="[0-9]{16}" placeholder="16 digit NIK"></label>
+            <label>Nomor HP / WhatsApp <small>Opsional</small><input name="phone" autocomplete="tel" placeholder="08xxxxxxxxxx"></label>
+          </div>
+          <label>Alamat <small>Opsional</small><textarea name="address" rows="3" autocomplete="street-address" placeholder="Alamat domisili"></textarea></label>
+          <div class="account-form-row">
+            <label>Password<input id="registerPassword" type="password" name="password" minlength="12" required autocomplete="new-password" placeholder="Minimal 12 karakter"></label>
+            <label>Ulangi password<input id="registerConfirmation" type="password" name="password_confirmation" minlength="12" required autocomplete="new-password" placeholder="Ulangi password"></label>
+          </div>
+          <label class="account-check"><input type="checkbox" required><span>Saya memahami bahwa akun hanya membantu akses portal dan setiap layanan tetap melalui verifikasi petugas.</span></label>
+          <button class="btn btn-primary auth-submit" type="submit"><i data-lucide="user-plus"></i> Buat Akun Warga</button>
+          <p id="authMessage" class="account-message" aria-live="polite"></p>
+        </form>
+        <p class="auth-switch-page">Sudah punya akun? <a href="login.html">Masuk sekarang</a></p>
+      </div>
+    </section>
+  </main>
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/js/auth-pages.js"></script>
+</body>
+</html>

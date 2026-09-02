@@ -1,0 +1,8 @@
+backend/.env
+backend/storage/private/*
+!backend/storage/private/.htaccess
+assets/uploads/*
+!assets/uploads/.htaccess
+.DS_Store
+Thumbs.db
+*.log

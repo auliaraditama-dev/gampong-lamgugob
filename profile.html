@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#087352">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex,nofollow">
+  <script>
+    (()=>{try{
+      const saved=localStorage.getItem('gampong-theme');
+      const theme=saved==='dark'||saved==='light'?saved:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.dataset.theme=theme;
+      const meta=document.querySelector('meta[name="theme-color"]');
+      if(meta)meta.setAttribute('content',theme==='dark'?'#09130f':'#087352');
+    }catch(_){}})();
+  </script>
+  <title>Akun Saya · Portal Gampong</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/redesign.css">
+  <link rel="stylesheet" href="assets/css/account-pages.css">
+</head>
+<body class="account-page profile-page">
+  <header class="profile-topbar">
+    <div class="profile-container profile-topbar-inner">
+      <a class="auth-page-brand compact" href="./">
+        <span class="brand-mark" id="profileBrandMark">PG</span>
+        <span><strong id="profileBrandName">Portal Gampong</strong><small id="profileBrandLocation">Akun Warga</small></span>
+      </a>
+      <div class="profile-top-actions">
+        <a class="profile-home-link" href="./"><i data-lucide="house"></i><span>Website</span></a>
+        <button class="auth-theme-button" id="pageThemeButton" type="button" aria-label="Ubah tema"><i data-lucide="moon"></i></button>
+        <button class="profile-logout" id="profileLogoutButton" type="button"><i data-lucide="log-out"></i><span>Keluar</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="profile-container profile-main" id="profileApp" hidden>
+    <section class="profile-hero-card">
+      <div class="profile-avatar" id="profileAvatar">U</div>
+      <div class="profile-hero-copy">
+        <span class="eyebrow">Akun Warga</span>
+        <h1 id="profileName">Akun Saya</h1>
+        <p id="profileIdentity"></p>
+      </div>
+      <span class="profile-verify" id="profileVerified">Belum diverifikasi</span>
+    </section>
+
+    <div class="profile-layout-page">
+      <aside class="profile-sidebar">
+        <nav id="profileNav" aria-label="Navigasi akun">
+          <a href="#ringkasan" class="active"><i data-lucide="layout-dashboard"></i> Ringkasan</a>
+          <a href="#profil-akun"><i data-lucide="user-round-cog"></i> Profil</a>
+          <a href="#pengajuan-akun"><i data-lucide="file-check-2"></i> Pengajuan</a>
+          <a href="#pengaduan-akun"><i data-lucide="message-square-warning"></i> Pengaduan</a>
+          <a href="#keamanan-akun"><i data-lucide="shield-check"></i> Keamanan</a>
+        </nav>
+        <div class="profile-sidebar-note"><i data-lucide="info"></i><p>Website publik tetap tersedia tanpa login. Akun membantu menyimpan riwayat pelayanan Anda.</p></div>
+      </aside>
+
+      <div class="profile-content">
+        <section class="profile-section" id="ringkasan">
+          <div class="profile-section-head"><div><span class="eyebrow">Ringkasan</span><h2>Aktivitas akun</h2></div></div>
+          <div class="profile-summary-grid" id="profileSummaryGrid"></div>
+          <div class="profile-quick-actions">
+            <a href="index.html#layanan"><i data-lucide="file-plus-2"></i><span><b>Ajukan layanan</b><small>Buka daftar layanan publik</small></span></a>
+            <a href="index.html#pengaduan"><i data-lucide="message-square-plus"></i><span><b>Buat pengaduan</b><small>Sampaikan aspirasi atau laporan</small></span></a>
+            <a href="./"><i data-lucide="newspaper"></i><span><b>Lihat informasi</b><small>Kembali ke portal publik</small></span></a>
+          </div>
+        </section>
+
+        <section class="profile-section" id="profil-akun">
+          <div class="profile-section-head"><div><span class="eyebrow">Profil</span><h2>Data akun warga</h2><p>Perubahan nama, email, atau NIK akan mengatur ulang status verifikasi sampai diverifikasi kembali oleh pengelola.</p></div></div>
+          <form id="profilePageForm" class="account-form profile-form">
+            <div class="account-form-row"><label>Nama<input name="name" required maxlength="150"></label><label>Email<input type="email" name="email" required maxlength="190"></label></div>
+            <div class="account-form-row"><label>NIK <small>Opsional · 16 digit</small><input name="nik" inputmode="numeric" maxlength="16" pattern="[0-9]{16}"></label><label>Nomor HP / WhatsApp<input name="phone"></label></div>
+            <label>Alamat<textarea name="address" rows="4"></textarea></label>
+            <div class="profile-form-actions"><button class="btn btn-primary" type="submit"><i data-lucide="save"></i> Simpan Profil</button></div>
+          </form>
+        </section>
+
+        <section class="profile-section" id="pengajuan-akun">
+          <div class="profile-section-head"><div><span class="eyebrow">Pelayanan</span><h2>Riwayat pengajuan</h2></div><a class="btn btn-outline small-action" href="index.html#layanan">Ajukan layanan</a></div>
+          <div id="profileRequests" class="profile-history-list"></div>
+        </section>
+
+        <section class="profile-section" id="pengaduan-akun">
+          <div class="profile-section-head"><div><span class="eyebrow">Aspirasi</span><h2>Riwayat pengaduan</h2></div><a class="btn btn-outline small-action" href="index.html#pengaduan">Buat pengaduan</a></div>
+          <div id="profileComplaints" class="profile-history-list"></div>
+        </section>
+
+        <section class="profile-section" id="keamanan-akun">
+          <div class="profile-section-head"><div><span class="eyebrow">Keamanan</span><h2>Ubah password</h2><p>Gunakan password minimal 12 karakter dan jangan gunakan password yang sama dengan akun lain.</p></div></div>
+          <form id="profilePasswordForm" class="account-form profile-password-form">
+            <label>Password saat ini<input type="password" name="current_password" required autocomplete="current-password"></label>
+            <div class="account-form-row"><label>Password baru<input type="password" name="new_password" minlength="12" required autocomplete="new-password"></label><label>Ulangi password baru<input type="password" name="password_confirmation" minlength="12" required autocomplete="new-password"></label></div>
+            <div class="profile-form-actions"><button class="btn btn-primary" type="submit"><i data-lucide="key-round"></i> Ubah Password</button></div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="profileLoading" class="profile-loading"><span class="profile-loader"></span><p>Memuat akun...</p></div>
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/js/profile.js"></script>
+</body>
+</html>
