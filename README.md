@@ -1,97 +1,879 @@
-# Portal Gampong Full-Stack — 100% Data-Driven
+<div align="center">
 
-Frontend modern HTML/CSS/JavaScript + backend PHP 8+ + MySQL/MariaDB + Dashboard Admin.
+# Portal Gampong Full-Stack
 
-Prinsip project ini:
+### Portal Pemerintahan Gampong 100% Data-Driven
 
-> Tidak ada data gampong dummy/hard-coded di halaman publik. Semua konten yang bisa berubah dikelola Admin → MySQL → API → `index.html`.
+Frontend modern HTML, CSS, JavaScript dengan backend PHP 8+, MySQL/MariaDB, autentikasi warga, RBAC, Dashboard Admin, SEO, PWA, dan keamanan produksi.
 
-Fresh install hanya membuat tabel dan akun admin. Jika sebuah modul belum diisi, halaman publik menampilkan empty-state dan tidak membuat data contoh.
+<br>
 
-## Fitur publik
+<img src="https://img.shields.io/badge/PHP-8%2B-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP">
+<img src="https://img.shields.io/badge/MySQL-MariaDB-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
+<img src="https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?style=for-the-badge&logo=javascript&logoColor=111" alt="JavaScript">
+<img src="https://img.shields.io/badge/Laragon-Windows-0E83CD?style=for-the-badge&logo=windows&logoColor=white" alt="Laragon">
+<img src="https://img.shields.io/badge/PWA-Ready-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white" alt="PWA">
 
-- Hero dinamis: eyebrow, judul, subjudul, background, profil pimpinan/Keuchik.
-- Identitas gampong, kecamatan, kota/kabupaten, provinsi, kode pos, jam pelayanan.
-- Logo dinamis.
-- Profil, sejarah/deskripsi, visi, misi, nilai pelayanan, komitmen.
-- Perangkat gampong dan foto.
-- Lembaga gampong.
-- Layanan publik dinamis per kategori.
-- Persyaratan layanan satu-per-baris dari admin.
-- Alur dan estimasi layanan.
-- Pengajuan layanan online hanya untuk layanan yang diaktifkan admin.
-- Upload dokumen PDF/JPG/PNG maksimal 5 MB.
-- NIK 16 digit divalidasi di browser dan server.
-- Tiket pengajuan otomatis.
-- Pengaduan/aspirasi + kategori dinamis dari admin.
-- Tiket pengaduan otomatis.
-- Cek status pengajuan/pengaduan.
-- Data sensitif terenkripsi AES-256-GCM.
-- Statistik penduduk dinamis.
-- Statistik unggulan di Hero.
-- Diagram laki-laki/perempuan otomatis jika admin membuat `stat_key` `male` dan `female`.
-- APBG dinamis + perhitungan realisasi + export CSV.
-- Data pembangunan/proyek + progres.
-- Berita.
-- Pengumuman + ticker otomatis.
-- Agenda.
-- UMKM.
-- Galeri + lightbox.
-- FAQ.
-- Akses cepat.
-- Kontak, Google Maps embed, petunjuk arah.
-- Sosial media.
-- Tautan eksternal.
-- Sumber data.
-- Pencarian client-side dari seluruh data publik yang sudah dimuat API.
-- Dark mode.
-- Kontrol ukuran teks.
-- Responsive desktop/tablet/mobile.
-- Reduced-motion accessibility.
-- SEO teknis lengkap: title, description, keywords, canonical, Open Graph, Twitter Card, JSON-LD, robots.txt, sitemap.xml, dan halaman artikel crawlable.
-- PWA manifest dinamis melalui `manifest.php`.
-- Service worker dengan API/auth/admin dikecualikan dari cache.
-- PWA icons 192/512 + favicon.
-- Session idle timeout dan session ID rotation.
-- Public settings menggunakan whitelist agar setting internal tidak ikut terekspos.
+<br><br>
 
-## Fitur backend/admin
+<img src="https://img.shields.io/badge/Security-RBAC-0A7C5A?style=flat-square" alt="RBAC">
+<img src="https://img.shields.io/badge/SEO-Technical-111827?style=flat-square" alt="SEO">
+<img src="https://img.shields.io/badge/UI-Responsive-2563EB?style=flat-square" alt="Responsive">
+<img src="https://img.shields.io/badge/Data-100%25%20Dynamic-15803D?style=flat-square" alt="Dynamic">
+<img src="https://img.shields.io/badge/Dummy%20Data-None-B91C1C?style=flat-square" alt="No Dummy">
 
-- PHP 8+ menggunakan PDO MySQL.
-- Login admin dengan `password_hash()` / `password_verify()`.
-- Role `superadmin`, `admin`, `operator`.
-- Session cookie HttpOnly + SameSite Strict.
-- CSRF protection untuk mutation admin.
-- Rate limiting login, pengajuan, pengaduan, dan status tiket.
-- NIK, telepon, alamat, nama/kontak pengaduan, dan isi pengaduan terenkripsi AES-256-GCM.
-- Dokumen pengajuan disimpan di folder privat.
-- Media publik JPG/PNG/WEBP maksimal 4 MB.
-- Folder upload memblokir eksekusi script melalui `.htaccess`.
-- Audit log aktivitas admin.
-- Export seluruh data publik ke JSON.
-- CRUD:
-  - Perangkat gampong
-  - Lembaga
-  - Statistik penduduk
-  - Layanan + persyaratan
-  - Berita/pengumuman
-  - Agenda
-  - FAQ
-  - UMKM
-  - Galeri
-  - APBG
-  - Pembangunan
-  - Akses cepat
-  - Sosial media
-  - Tautan eksternal
-  - Sumber data
-- Workflow status pengajuan surat.
-- Workflow status pengaduan.
-- Pengaturan identitas, hero, profil, kontak, peta, footer, SEO.
-- Manajemen pengguna admin untuk superadmin.
-- Ubah password.
+</div>
 
-## Database
+---
+
+## Tentang Project
+
+Portal Gampong adalah sistem website pemerintahan gampong berbasis:
+
+```text
+Admin
+  ↓
+MySQL / MariaDB
+  ↓
+PHP REST API
+  ↓
+Frontend
+```
+
+Prinsip utama project:
+
+> Tidak ada data gampong dummy atau hard-coded pada halaman publik. Seluruh informasi yang dapat berubah dikelola melalui Dashboard Admin, disimpan di database, dikirim melalui API, lalu dirender ke website.
+
+Fresh install hanya membuat:
+
+```text
+Database
+Tables
+Super Admin
+```
+
+Fresh install tidak membuat:
+
+```text
+Berita dummy
+Agenda dummy
+Data penduduk dummy
+APBG dummy
+Nama Keuchik dummy
+UMKM dummy
+Galeri dummy
+Kontak dummy
+```
+
+Jika suatu modul belum memiliki data, frontend menampilkan empty-state.
+
+---
+
+# Fitur Utama
+
+## Website Publik
+
+Website publik dapat dibuka oleh:
+
+```text
+Guest
+User / Warga
+Admin
+Operator
+Super Admin
+```
+
+Pengunjung tidak diwajibkan login untuk mengakses informasi publik.
+
+Fitur tersedia:
+
+* Hero dinamis
+* Identitas gampong
+* Logo dinamis
+* Foto pimpinan / Keuchik
+* Profil gampong
+* Sejarah
+* Visi
+* Misi
+* Nilai pelayanan
+* Komitmen
+* Perangkat gampong
+* Lembaga
+* Statistik penduduk
+* Statistik unggulan hero
+* Diagram penduduk
+* Layanan publik
+* Persyaratan layanan
+* Estimasi layanan
+* Pengajuan surat
+* Pengaduan masyarakat
+* Cek tiket
+* Berita
+* Pengumuman
+* Announcement ticker
+* Agenda
+* APBG
+* Pembangunan
+* UMKM
+* Galeri
+* Lightbox
+* FAQ
+* Akses cepat
+* Google Maps
+* Kontak
+* Sosial media
+* Tautan eksternal
+* Sumber data
+* Pencarian website
+* Responsive UI
+* Light mode
+* Dark mode
+* Accessibility font size
+* Reduced motion
+* PWA
+* SEO teknis
+
+---
+
+# Data-Driven Architecture
+
+Seluruh konten publik berasal dari database.
+
+```mermaid
+flowchart TD
+
+A[Dashboard Admin] --> B[PHP API]
+B --> C[(MySQL / MariaDB)]
+C --> B
+B --> D[Website Publik]
+D --> E[Guest]
+D --> F[Warga]
+```
+
+Frontend mengambil data utama menggunakan:
+
+```text
+GET api.php?action=content
+```
+
+Setelah data diubah dari Dashboard Admin:
+
+```text
+Admin Simpan
+     ↓
+Database
+     ↓
+API
+     ↓
+Frontend reload data
+```
+
+Tidak perlu mengubah:
+
+```text
+index.html
+CSS
+JavaScript
+```
+
+untuk memperbarui konten gampong.
+
+---
+
+# Sistem Role
+
+Project menggunakan Role-Based Access Control pada backend.
+
+Role internal:
+
+```text
+superadmin
+admin
+operator
+user
+guest
+```
+
+Role internal tidak perlu diperlihatkan kepada pengunjung website publik.
+
+---
+
+## Super Admin
+
+Super Admin memiliki kontrol tertinggi terhadap sistem.
+
+```text
+Super Admin
+├── Seluruh fitur Admin
+├── Seluruh fitur Operator
+├── Pengguna Admin
+├── Pengguna Warga
+├── Role pengguna
+├── Reset password
+├── Status akun
+├── Audit Log
+└── Pengaturan keamanan
+```
+
+---
+
+## Admin
+
+Admin berfungsi sebagai pengelola website dan data publik.
+
+```text
+Admin
+├── Identitas Gampong
+├── Hero
+├── Profil
+├── Perangkat
+├── Lembaga
+├── Statistik
+├── Layanan
+├── Persyaratan
+├── Berita
+├── Pengumuman
+├── Agenda
+├── FAQ
+├── UMKM
+├── Galeri
+├── APBG
+├── Pembangunan
+├── Navigasi
+├── Sosial Media
+├── Sumber Data
+├── Pengajuan
+└── Pengaduan
+```
+
+Admin tidak dapat:
+
+```text
+Mengelola role administrator
+Menghapus Super Admin
+Melihat fungsi sistem khusus Super Admin
+```
+
+---
+
+## Operator
+
+Operator berfungsi sebagai petugas pelayanan.
+
+```text
+Operator
+├── Dashboard
+├── Pengajuan Surat
+│   ├── lihat
+│   ├── verifikasi
+│   ├── proses
+│   ├── selesai
+│   └── download dokumen
+│
+├── Pengaduan
+│   ├── lihat
+│   ├── review
+│   ├── proses
+│   └── selesai
+│
+└── Ubah Password
+```
+
+Operator tidak mempunyai permission untuk mengubah konten website.
+
+---
+
+## User / Warga
+
+Warga dapat membuat akun melalui halaman register.
+
+```text
+Warga
+├── Login
+├── Profil
+├── Update data
+├── Riwayat pengajuan
+├── Riwayat pengaduan
+├── Cek status
+├── Ubah password
+└── Prefill layanan
+```
+
+Registrasi publik selalu menghasilkan akun:
+
+```text
+user
+```
+
+Registrasi tidak dapat menghasilkan:
+
+```text
+operator
+admin
+superadmin
+```
+
+---
+
+## Guest
+
+Guest tetap dapat menggunakan website tanpa login.
+
+```text
+Guest
+├── Informasi publik
+├── Berita
+├── Statistik
+├── APBG
+├── Layanan
+├── Pengajuan
+├── Pengaduan
+├── Galeri
+├── FAQ
+└── Cek tiket
+```
+
+---
+
+# Matriks RBAC
+
+| Kemampuan             | Super Admin | Admin | Operator |
+| --------------------- | :---------: | :---: | :------: |
+| Dashboard             |      Ya     |   Ya  |    Ya    |
+| Lihat pengajuan       |      Ya     |   Ya  |    Ya    |
+| Proses pengajuan      |      Ya     |   Ya  |    Ya    |
+| Download berkas       |      Ya     |   Ya  |    Ya    |
+| Lihat pengaduan       |      Ya     |   Ya  |    Ya    |
+| Proses pengaduan      |      Ya     |   Ya  |    Ya    |
+| Identitas gampong     |      Ya     |   Ya  |   Tidak  |
+| Perangkat             |      Ya     |   Ya  |   Tidak  |
+| Lembaga               |      Ya     |   Ya  |   Tidak  |
+| Statistik             |      Ya     |   Ya  |   Tidak  |
+| Layanan               |      Ya     |   Ya  |   Tidak  |
+| Berita                |      Ya     |   Ya  |   Tidak  |
+| Agenda                |      Ya     |   Ya  |   Tidak  |
+| FAQ                   |      Ya     |   Ya  |   Tidak  |
+| UMKM                  |      Ya     |   Ya  |   Tidak  |
+| Galeri                |      Ya     |   Ya  |   Tidak  |
+| APBG                  |      Ya     |   Ya  |   Tidak  |
+| Pembangunan           |      Ya     |   Ya  |   Tidak  |
+| Upload media          |      Ya     |   Ya  |   Tidak  |
+| Export publik         |      Ya     |   Ya  |   Tidak  |
+| Kelola pengguna admin |      Ya     | Tidak |   Tidak  |
+| Kelola warga          |      Ya     | Tidak |   Tidak  |
+| Audit Log             |      Ya     | Tidak |   Tidak  |
+
+Permission diperiksa server-side.
+
+```text
+superadmin
+dashboard
+workflow.*
+cms.*
+settings.*
+media.upload
+export.public
+users.manage
+citizens.manage
+audit.read
+account.password
+```
+
+```text
+admin
+dashboard
+workflow.*
+cms.*
+settings.*
+media.upload
+export.public
+account.password
+```
+
+```text
+operator
+dashboard
+workflow.read
+workflow.update
+workflow.download
+account.password
+```
+
+---
+
+# Authentication
+
+Halaman autentikasi dipisahkan dari homepage.
+
+```text
+login.html
+register.html
+profile.html
+```
+
+Alur:
+
+```mermaid
+flowchart TD
+
+A[Login] --> B{Jenis akun}
+
+B -->|Pengelola| C[Admin Dashboard]
+B -->|Warga| D[Profile Warga]
+
+E[Register] --> F[User / Warga]
+F --> D
+```
+
+---
+
+# Profile Warga
+
+Halaman:
+
+```text
+/profile.html
+```
+
+Fitur:
+
+```text
+Dashboard Akun
+├── Ringkasan
+├── Profil
+├── Pengajuan
+├── Pengaduan
+└── Keamanan
+```
+
+Informasi akun dapat mencakup:
+
+```text
+Nama
+Email
+NIK
+Nomor HP
+Alamat
+Status akun
+```
+
+Saat warga login, form layanan dapat melakukan prefill otomatis.
+
+---
+
+# Sistem Pengajuan Surat
+
+Admin membuat jenis layanan dari Dashboard.
+
+Setiap layanan dapat memiliki:
+
+```text
+Nama
+Kategori
+Deskripsi
+Icon
+Estimasi
+Persyaratan
+Alur
+Urutan
+Online
+Published
+```
+
+Hanya layanan:
+
+```text
+Online = Ya
+Published = Ya
+```
+
+yang muncul pada formulir pengajuan.
+
+---
+
+## Workflow Pengajuan
+
+```text
+pending
+   ↓
+verified
+   ↓
+processing
+   ↓
+completed
+```
+
+Alternatif:
+
+```text
+rejected
+```
+
+---
+
+# Pengaduan
+
+Pengaduan dapat dikirim oleh:
+
+```text
+Guest
+Warga
+```
+
+Data:
+
+```text
+Nama
+Kontak
+Kategori
+Pesan
+Privasi identitas
+```
+
+Workflow:
+
+```text
+new
+ ↓
+reviewed
+ ↓
+in_progress
+ ↓
+resolved
+ ↓
+closed
+```
+
+---
+
+# Sistem Tiket
+
+Pengajuan dan pengaduan menghasilkan nomor tiket otomatis.
+
+Contoh format:
+
+```text
+PREFIX-TAHUN-RANDOM
+```
+
+Warga dapat mengecek status menggunakan endpoint:
+
+```text
+GET api.php?action=status&ticket=...
+```
+
+Response tidak menampilkan data sensitif.
+
+---
+
+# Keamanan Data
+
+Data sensitif tidak disimpan sebagai plaintext.
+
+Data terenkripsi:
+
+```text
+NIK
+Nomor HP
+Alamat
+Nama pengadu
+Kontak pengadu
+Isi pengaduan
+```
+
+Enkripsi:
+
+```text
+AES-256-GCM
+```
+
+Password:
+
+```php
+password_hash()
+password_verify()
+```
+
+NIK juga memiliki fingerprint menggunakan:
+
+```text
+HMAC-SHA256
+```
+
+untuk membantu mendeteksi registrasi NIK yang sama tanpa harus menyimpan NIK dalam plaintext.
+
+---
+
+# Security Features
+
+Project dilengkapi dengan:
+
+```text
+RBAC
+CSRF Protection
+Rate Limiting
+Password Hashing
+AES-256-GCM
+HttpOnly Cookie
+SameSite Strict
+Session Rotation
+Session Idle Timeout
+Upload Validation
+Private Storage
+Protected Backend
+Protected Admin Assets
+Content Security Policy
+X-Content-Type-Options
+X-Frame-Options
+Permissions Policy
+HSTS on HTTPS
+Public Settings Whitelist
+```
+
+---
+
+# Upload Security
+
+Dokumen warga:
+
+```text
+PDF
+JPG
+JPEG
+PNG
+```
+
+Ukuran maksimal:
+
+```text
+5 MB
+```
+
+Lokasi:
+
+```text
+backend/storage/private/
+```
+
+Folder tidak boleh diakses langsung dari browser.
+
+Media publik:
+
+```text
+JPG
+PNG
+WEBP
+```
+
+Ukuran maksimal:
+
+```text
+4 MB
+```
+
+Script execution pada folder upload diblokir.
+
+---
+
+# SEO
+
+Homepage menggunakan:
+
+```text
+index.php
+```
+
+sebagai server-side SEO wrapper.
+
+Fitur SEO:
+
+```text
+Dynamic Title
+Meta Description
+Meta Keywords
+Canonical
+Open Graph
+Twitter Card
+JSON-LD
+GovernmentOrganization Schema
+NewsArticle Schema
+robots.txt
+sitemap.xml
+Article Page
+SEO Image
+```
+
+Artikel memiliki halaman:
+
+```text
+post.php?slug=...
+```
+
+---
+
+# SEO Admin
+
+Admin dapat mengatur:
+
+```text
+SEO Title
+SEO Description
+SEO Keywords
+SEO Image
+```
+
+Setelah domain produksi aktif, sitemap tersedia melalui:
+
+```text
+/sitemap.xml
+```
+
+dan dapat didaftarkan ke search engine.
+
+---
+
+# Progressive Web App
+
+Project mendukung PWA.
+
+File utama:
+
+```text
+manifest.php
+sw.js
+```
+
+Fitur:
+
+```text
+Dynamic Manifest
+Installable Website
+192x192 Icon
+512x512 Icon
+Favicon
+Offline Static Assets
+Theme Color
+```
+
+Data berikut tidak dicache:
+
+```text
+API
+Authentication
+Admin
+Profile data
+Backend
+```
+
+---
+
+# Responsive Design
+
+Layout dirancang untuk:
+
+```text
+Desktop
+Laptop
+Tablet Landscape
+Tablet Portrait
+Mobile
+Small Mobile
+```
+
+Breakpoint utama:
+
+```text
+1180px
+1020px
+820px
+680px
+430px
+380px
+```
+
+Komponen responsif:
+
+```text
+Navbar
+Hero
+Quick Access
+Profile
+Cards
+Government Officials
+Services
+Statistics
+APBG
+News
+Agenda
+UMKM
+Gallery
+FAQ
+Contact
+Forms
+Modal
+Dashboard
+Sidebar
+Tables
+Drawers
+Auth Pages
+Profile Pages
+```
+
+---
+
+# Theme
+
+Website mendukung:
+
+```text
+Light Mode
+Dark Mode
+```
+
+Preference tersimpan di:
+
+```text
+localStorage
+```
+
+dengan key:
+
+```text
+gampong-theme
+```
+
+Theme diterapkan sebelum browser merender halaman untuk menghindari flash light/dark.
+
+Dashboard admin menggunakan theme preference yang sama.
+
+---
+
+# Accessibility
+
+Tersedia:
+
+```text
+A-
+A
+A+
+```
+
+untuk mengatur ukuran teks.
+
+Fitur tambahan:
+
+```text
+Skip Link
+Keyboard Navigation
+Focus State
+Reduced Motion
+ARIA
+Responsive Typography
+```
+
+---
+
+# Database
 
 Fresh database mempunyai tabel:
 
@@ -121,26 +903,45 @@ rate_limits
 audit_logs
 ```
 
-`backend/database/seed.sql` sengaja kosong. Tidak ada konten dummy yang di-import.
+File:
 
-## Struktur project
+```text
+backend/database/seed.sql
+```
+
+sengaja tidak mengandung konten dummy.
+
+---
+
+# Struktur Project
 
 ```text
 gampong-lamgugob/
-├── index.php              # homepage server-side SEO wrapper
-├── index.html             # template UI publik
-├── post.php               # halaman artikel SEO
-├── robots.php / robots.txt
-├── sitemap.php / sitemap.xml
+│
+├── index.php
+├── index.html
+├── post.php
+├── login.html
+├── register.html
+├── profile.html
+│
 ├── api.php
 ├── manifest.php
+├── robots.php
+├── sitemap.php
+├── robots.txt
+├── sitemap.xml
 ├── sw.js
 ├── README.md
+│
 ├── admin/
 │   ├── index.php
+│   ├── asset.php
 │   └── assets/
 │       ├── admin.css
+│       ├── redesign.css
 │       └── admin.js
+│
 ├── backend/
 │   ├── .env.example
 │   ├── .htaccess
@@ -149,28 +950,48 @@ gampong-lamgugob/
 │   ├── config.php
 │   ├── install.php
 │   ├── reset-content.php
+│   ├── rbac-selftest.php
+│   ├── auth-selftest.php
+│   │
 │   ├── database/
 │   │   ├── schema.sql
 │   │   └── seed.sql
-│   └── storage/private/
+│   │
+│   └── storage/
+│       └── private/
+│
 └── assets/
-    ├── css/style.css
-    ├── js/app.js
+    ├── css/
+    │   ├── style.css
+    │   ├── redesign.css
+    │   └── account-pages.css
+    │
+    ├── js/
+    │   ├── app.js
+    │   ├── auth-pages.js
+    │   └── profile.js
+    │
     ├── images/
+    ├── icons/
     └── uploads/
 ```
 
-# Instalasi XAMPP Windows
+---
 
-## 1. Letakkan project
+# Instalasi Menggunakan Laragon
+
+## Requirement
+
+Gunakan:
 
 ```text
-C:\xampp\htdocs\gampong-lamgugob
+Laragon
+PHP 8+
+MySQL atau MariaDB
+Apache atau Nginx
 ```
 
-Nyalakan Apache dan MySQL dari XAMPP Control Panel.
-
-Pastikan extension PHP tersedia:
+Extension PHP:
 
 ```text
 pdo_mysql
@@ -179,28 +1000,123 @@ fileinfo
 mbstring
 ```
 
-## 2. Buat `.env`
+---
+
+## 1. Letakkan Project di Laragon
+
+Copy project ke:
+
+```text
+C:\laragon\www\gampong-lamgugob
+```
+
+Hasilnya:
+
+```text
+C:\laragon\www\gampong-lamgugob\
+├── index.php
+├── index.html
+├── admin\
+├── backend\
+└── assets\
+```
+
+---
+
+## 2. Jalankan Laragon
+
+Buka:
+
+```text
+Laragon
+```
+
+Klik:
+
+```text
+Start All
+```
+
+Pastikan berjalan:
+
+```text
+Apache
+MySQL / MariaDB
+```
+
+---
+
+## 3. Buka Terminal Laragon
+
+Klik:
+
+```text
+Menu
+→ Terminal
+```
+
+Masuk ke project:
+
+```bash
+cd C:\laragon\www\gampong-lamgugob
+```
+
+Jika menggunakan Git Bash:
+
+```bash
+cd /c/laragon/www/gampong-lamgugob
+```
+
+---
+
+# 4. Buat `.env`
+
+CMD / Terminal Laragon:
+
+```bat
+copy backend\.env.example backend\.env
+```
 
 Git Bash:
 
 ```bash
-cd /c/xampp/htdocs/gampong-lamgugob
 cp backend/.env.example backend/.env
 ```
 
-Generate APP_KEY:
+---
+
+# 5. Generate APP_KEY
+
+Jalankan:
 
 ```bash
 php -r "echo bin2hex(random_bytes(32)), PHP_EOL;"
 ```
 
-Isi `backend/.env`:
+Contoh output:
+
+```text
+9f42....................................................
+```
+
+Copy output tersebut.
+
+Buka:
+
+```text
+backend/.env
+```
+
+Isi:
 
 ```env
 APP_NAME="Portal Gampong"
 APP_ENV=production
+
 APP_KEY=PASTE_RANDOM_KEY_DI_SINI
-BASE_URL=http://localhost/gampong-lamgugob
+
+BASE_URL=http://gampong-lamgugob.test
+
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_NAME=gampong_lamgugob
@@ -208,77 +1124,149 @@ DB_USER=root
 DB_PASS=
 ```
 
-**Jangan mengganti `APP_KEY` setelah data warga tersimpan**, karena key tersebut digunakan untuk mengenkripsi/dekripsi data sensitif.
+Jangan menggunakan contoh `APP_KEY`.
 
-## 3. Install database
+Generate key milikmu sendiri.
 
-Dari root project:
+---
+
+# 6. Laragon Pretty URL
+
+Laragon biasanya menyediakan automatic virtual host.
+
+Setelah folder berada di:
+
+```text
+C:\laragon\www\gampong-lamgugob
+```
+
+klik:
+
+```text
+Menu
+→ Apache
+→ Reload
+```
+
+atau:
+
+```text
+Stop All
+Start All
+```
+
+Kemudian coba:
+
+```text
+http://gampong-lamgugob.test
+```
+
+Jika automatic virtual host tidak digunakan, pakai:
+
+```text
+http://localhost/gampong-lamgugob
+```
+
+dan ubah:
+
+```env
+BASE_URL=http://localhost/gampong-lamgugob
+```
+
+Gunakan `BASE_URL` yang sama dengan URL website yang benar-benar kamu buka.
+
+---
+
+# 7. Install Database
+
+Buka Terminal Laragon dari root project.
 
 ```bash
-php backend/install.php \
-  --admin-name="Administrator" \
-  --admin-email="admin@example.local" \
-  --admin-password="GantiPasswordKuat123!"
+php backend/install.php --admin-name="Administrator" --admin-email="admin@example.local" --admin-password="GantiPasswordKuat123!"
 ```
 
 Installer akan:
 
-1. Membuat database jika belum ada.
-2. Membuat seluruh tabel.
-3. Membuat/memperbarui superadmin.
-4. **Tidak mengisi data gampong atau konten contoh.**
-
-## 4. Buka
-
-Frontend (gunakan URL root agar SEO server-side aktif):
-
 ```text
-http://localhost/gampong-lamgugob/
+Membuat database
+Membuat tabel
+Membuat Super Admin
+Menjalankan migration/upgrade
+Tidak membuat konten dummy
 ```
 
-Admin:
+---
+
+# 8. Buka Website
+
+Jika automatic virtual host Laragon aktif:
 
 ```text
-http://localhost/gampong-lamgugob/admin/
+http://gampong-lamgugob.test/
+```
+
+Dashboard:
+
+```text
+http://gampong-lamgugob.test/admin/
+```
+
+Login:
+
+```text
+http://gampong-lamgugob.test/login.html
+```
+
+Register:
+
+```text
+http://gampong-lamgugob.test/register.html
+```
+
+Profile:
+
+```text
+http://gampong-lamgugob.test/profile.html
 ```
 
 Public API:
 
 ```text
-http://localhost/gampong-lamgugob/api.php?action=content
+http://gampong-lamgugob.test/api.php?action=content
 ```
 
-# Urutan pengisian admin yang disarankan
+---
 
-1. **Identitas & Tampilan**
-   - nama gampong
-   - kecamatan/kota/provinsi
-   - alamat/kontak
-   - hero
-   - pimpinan/Keuchik
-   - profil/visi/misi
-   - peta
-   - SEO
-2. **Perangkat Gampong**
-3. **Lembaga**
-4. **Statistik Penduduk**
-5. **Layanan Publik + Persyaratan**
-6. **Berita / Pengumuman / Agenda**
-7. **APBG / Pembangunan**
-8. **UMKM / Galeri**
-9. **FAQ / Akses Cepat / Sosial / Tautan / Sumber Data**
+# Urutan Pengisian Dashboard
 
-Setelah admin klik simpan/publish, frontend mengambil data melalui:
+Setelah login sebagai Super Admin:
 
 ```text
-GET api.php?action=content
+1. Identitas & Tampilan
+2. Perangkat Gampong
+3. Lembaga
+4. Statistik
+5. Layanan
+6. Berita
+7. Pengumuman
+8. Agenda
+9. APBG
+10. Pembangunan
+11. UMKM
+12. Galeri
+13. FAQ
+14. Akses Cepat
+15. Sosial Media
+16. Tautan
+17. Sumber Data
+18. SEO
 ```
 
-Tidak perlu mengubah `index.html` untuk memperbarui data gampong.
+---
 
-# Statistik penduduk
+# Statistik
 
-Setiap statistik memiliki:
+Setiap statistik mempunyai:
 
 ```text
 stat_key
@@ -292,7 +1280,7 @@ sort_order
 is_published
 ```
 
-Contoh **format kunci** (bukan data contoh):
+Format key yang dikenali:
 
 ```text
 population_total
@@ -302,200 +1290,502 @@ families
 area_km2
 ```
 
-Gunakan `male` dan `female` jika ingin diagram jenis kelamin otomatis muncul.
-
-# Layanan publik
-
-Admin mengatur:
+Untuk diagram jenis kelamin gunakan:
 
 ```text
-Nama
-Kategori
-Deskripsi
-Icon
-Estimasi
-Persyaratan (satu per baris)
-Alur
-Urutan
-Bisa diajukan online
-Publik/tidak
+male
+female
 ```
 
-Hanya layanan dengan `Bisa diajukan online = Ya` dan `Publik = Ya` yang masuk ke dropdown form pengajuan.
+---
 
-# Status workflow
-
-Pengajuan:
-
-```text
-pending
-verified
-processing
-completed
-rejected
-```
-
-Pengaduan:
-
-```text
-new
-reviewed
-in_progress
-resolved
-closed
-```
-
-# API publik
+# Public API
 
 ```text
 GET  api.php?action=content
+
 POST api.php?action=service-request
+
 POST api.php?action=complaint
+
 GET  api.php?action=status&ticket=...
 ```
 
-# API admin
+---
+
+# Authentication API
+
+```text
+POST api.php?action=auth.register
+
+POST api.php?action=auth.login
+
+GET  api.php?action=auth.me
+
+POST api.php?action=auth.logout
+
+GET  api.php?action=auth.account
+
+POST api.php?action=auth.profile-update
+
+POST api.php?action=auth.password-change
+```
+
+---
+
+# Admin API
+
+Login:
 
 ```text
 POST api.php?action=admin.login
 GET  api.php?action=admin.me
 POST api.php?action=admin.logout
-GET  api.php?action=admin.dashboard
+```
 
-GET  api.php?action=admin.workflow-list&kind=requests
-GET  api.php?action=admin.workflow-list&kind=complaints
+Dashboard:
+
+```text
+GET api.php?action=admin.dashboard
+```
+
+Workflow:
+
+```text
+GET api.php?action=admin.workflow-list&kind=requests
+
+GET api.php?action=admin.workflow-list&kind=complaints
+
 POST api.php?action=admin.workflow-update
+```
 
+CMS:
+
+```text
 GET  api.php?action=admin.cms-list&type=services
+
 POST api.php?action=admin.cms-save
+
 POST api.php?action=admin.cms-delete
+```
 
+Settings:
+
+```text
 GET  api.php?action=admin.settings-get
+
 POST api.php?action=admin.settings-save
+```
+
+Media:
+
+```text
 POST api.php?action=admin.media-upload
-GET  api.php?action=admin.download&id=...
+```
 
+Private document:
+
+```text
+GET api.php?action=admin.download&id=...
+```
+
+Admin users:
+
+```text
 GET  api.php?action=admin.users-list
+
 POST api.php?action=admin.user-save
+
 POST api.php?action=admin.user-delete
-GET  api.php?action=admin.audit-list
-GET  api.php?action=admin.export
 ```
 
-# Upgrade dari versi sebelumnya
+Citizen management:
 
-`install.php` menggunakan `CREATE TABLE IF NOT EXISTS`, jadi dapat dijalankan lagi untuk membuat tabel modul baru.
+```text
+GET  api.php?action=admin.citizens-list
 
-Jika database lama **pernah diisi seed/dummy** dan kamu memang ingin mulai benar-benar kosong, backup database terlebih dahulu lalu jalankan:
-
-```bash
-php backend/reset-content.php --yes
+POST api.php?action=admin.citizen-update
 ```
 
-Perintah tersebut menghapus **semua konten publik, pengajuan, dan pengaduan**, tetapi mempertahankan akun admin. Jangan jalankan pada database produksi yang mempunyai data warga tanpa backup.
+Audit:
 
-# Keamanan produksi
+```text
+GET api.php?action=admin.audit-list
+```
 
-- Gunakan HTTPS.
-- Ganti email admin lokal.
-- Gunakan password unik dan kuat.
-- Gunakan `APP_KEY` acak minimal 32 karakter dan simpan aman.
-- Jangan commit `backend/.env`.
-- Backup database dan `backend/storage/private` secara rutin.
-- Batasi akses hosting/file manager.
-- Jangan simpan data warga di JavaScript, HTML, localStorage, atau repository publik.
-- Tinjau kebijakan retensi dokumen warga dan hak akses admin.
-- Sesuaikan validasi layanan dengan SOP resmi pemerintah gampong.
-\n\n# RBAC: Super Admin, Admin, dan Operator\n\nProject menerapkan Role-Based Access Control (RBAC) di **backend API** dan **dashboard UI**. Menyembunyikan menu bukan mekanisme keamanan utama; setiap endpoint memeriksa permission server-side.\n\n| Kemampuan | Super Admin | Admin | Operator |\n|---|:---:|:---:|:---:|\n| Dashboard | ✅ | ✅ | ✅ |\n| Pengajuan surat: lihat/proses/download | ✅ | ✅ | ✅ |\n| Pengaduan: lihat/proses | ✅ | ✅ | ✅ |\n| Kelola identitas/profil/kontak | ✅ | ✅ | ❌ |\n| Kelola perangkat/lembaga/statistik | ✅ | ✅ | ❌ |\n| Kelola layanan/berita/agenda/FAQ | ✅ | ✅ | ❌ |\n| Kelola UMKM/galeri/APBG/pembangunan | ✅ | ✅ | ❌ |\n| Kelola navigasi/sosial/sumber data | ✅ | ✅ | ❌ |\n| Upload media publik | ✅ | ✅ | ❌ |\n| Export JSON publik | ✅ | ✅ | ❌ |\n| Kelola pengguna dan role | ✅ | ❌ | ❌ |\n| Audit log | ✅ | ❌ | ❌ |\n| Ubah password sendiri | ✅ | ✅ | ✅ |\n\nPermission backend:\n\n```text\nsuperadmin: dashboard, workflow.*, cms.*, settings.*, media.upload, export.public, users.manage, audit.read, account.password\nadmin:      dashboard, workflow.*, cms.*, settings.*, media.upload, export.public, account.password\noperator:   dashboard, workflow.read, workflow.update, workflow.download, account.password\n```\n\n`requireAdmin()` sekarang mengambil ulang role dari tabel `admins` pada setiap request yang dilindungi. Jika superadmin mengubah role pengguna atau menghapus akun, session lama tidak mempertahankan privilege sebelumnya.\n\nPengelolaan konten memakai permission `cms.read` / `cms.write`, pengaturan portal memakai `settings.read` / `settings.write`, pelayanan warga memakai `workflow.*`, dan pengguna/audit hanya untuk superadmin.\n\nLihat `RBAC.md` untuk matriks endpoint lengkap.\n
-## Verifikasi RBAC
+Export:
+
+```text
+GET api.php?action=admin.export
+```
+
+---
+
+# Self Test
+
+RBAC:
 
 ```bash
 php backend/rbac-selftest.php
 ```
 
-Lihat juga `RBAC.md` dan `RBAC_AUDIT.md`.
+Authentication:
+
+```bash
+php backend/auth-selftest.php
+```
 
 ---
 
-# Update: Role Warga/User + Login/Register Publik
+# Upgrade Project Lama
 
-Versi ini menambahkan autentikasi publik tanpa mengubah sifat website sebagai portal yang dapat dibuka guest.
-
-## Role
+Sebelum upgrade:
 
 ```text
-superadmin  -> pemilik sistem
-admin       -> pengelola konten/data
-operator    -> pelayanan warga
-user        -> akun warga yang registrasi dari navbar
-guest       -> pengunjung tanpa login
+Backup database
+Backup backend/.env
+Backup backend/storage/private
+Backup assets/uploads
 ```
 
-Navbar `index.html` sekarang memiliki **Masuk** dan **Daftar**. Form Masuk adalah satu pintu untuk semua role. Login staf otomatis diarahkan ke `/admin/`; login warga tetap di halaman publik dan mendapat menu **Akun Saya**.
+Kemudian copy source versi baru.
 
-Registrasi publik selalu membuat `role=user` dan tidak dapat membuat akun admin/operator/superadmin.
-
-Lihat `USER_AUTH.md` dan `RBAC.md` untuk alur lengkap.
-
-## Upgrade dari ZIP RBAC sebelumnya
-
-Setelah mengganti source code dan memastikan backup database tersedia, jalankan installer yang sama:
+Jalankan kembali:
 
 ```bash
-php backend/install.php \
-  --admin-name="Administrator" \
-  --admin-email="admin@example.local" \
-  --admin-password="PasswordKuat123!"
+php backend/install.php --admin-name="Administrator" --admin-email="admin@example.local" --admin-password="PasswordKuat123!"
 ```
 
-Installer bersifat idempotent untuk struktur utama dan akan menambahkan tabel `users`, `service_requests.user_id`, `complaints.user_id`, index, dan foreign key bila database lama belum memilikinya.
+Installer dirancang untuk dapat dijalankan kembali guna menambahkan struktur yang belum tersedia.
 
-Akun warga tidak diberi data dummy. Semua akun warga berasal dari registrasi nyata atau pengelolaan akun yang dilakukan pengguna/Super Admin.
+---
 
+# Reset Konten
 
-## Redesign responsif & dark mode (v5)
+Untuk development saja.
 
-Versi ini mempertahankan seluruh modul backend, RBAC, akun warga, guest access, dan alur data dinamis sebelumnya. Perubahan UI utama:
+```bash
+php backend/reset-content.php --yes
+```
 
-- Tema diterapkan sebelum render untuk mencegah flash light mode.
-- Dark mode diperbaiki untuk input, select, modal, akun warga, kartu, source strip, form pengaduan, dan komponen dinamis.
-- Dashboard admin sekarang juga memiliki dark mode dan menggunakan preferensi tema yang sama dengan website publik.
-- Navbar, hero, kartu Keuchik, layanan, statistik, galeri, modal, akun warga, dan footer ditata ulang agar lebih adaptif.
-- Sidebar admin mobile memiliki backdrop/scrim, body lock, dan dapat ditutup dengan klik di luar atau tombol Escape.
-- Tabel admin tetap dapat digeser horizontal pada layar kecil tanpa merusak layout.
-- Modal mobile menggunakan batas tinggi berbasis `100dvh` agar aman pada browser mobile.
-- Service worker dinaikkan ke cache `portal-gampong-v5-redesign` dan memuat stylesheet redesign untuk mode offline.
-
-Stylesheet redesign berada di:
+Perintah ini dapat menghapus:
 
 ```text
-assets/css/redesign.css
-admin/assets/redesign.css
+Konten publik
+Pengajuan
+Pengaduan
 ```
 
-File CSS lama tetap dipertahankan untuk kompatibilitas seluruh fitur lama; stylesheet redesign dimuat setelahnya sebagai lapisan UI terbaru.
+Akun admin dipertahankan.
 
-## Auth & Profil sebagai Halaman Terpisah
+Jangan jalankan pada database produksi yang mempunyai data warga tanpa backup.
 
-Versi terbaru memisahkan akun warga dari `index.html`:
+---
 
-- `login.html` — login satu pintu untuk Super Admin, Admin, Operator, dan User/Warga.
-- `register.html` — registrasi publik khusus role `user`.
-- `profile.html` — profil warga, riwayat pengajuan, riwayat pengaduan, dan ubah password.
+# Security Production Checklist
 
-`index.html` tetap dapat diakses sebagai guest dan tidak lagi memuat modal login/register/profile. Navbar membaca session dengan `auth.me`: user menuju `profile.html`, sedangkan staf menuju `admin/`.
+Sebelum deployment:
 
-Light mode juga mendapat override eksplisit pada komponen legacy, input/autofill, modal, card, tabel admin, halaman auth, dan halaman profil untuk mencegah teks hilang pada latar terang.
+```text
+[ ] HTTPS aktif
+[ ] APP_ENV=production
+[ ] BASE_URL HTTPS benar
+[ ] APP_KEY random dan aman
+[ ] Database bukan akun root
+[ ] Password database kuat
+[ ] Super Admin menggunakan password unik
+[ ] backend/.env tidak berada di repository publik
+[ ] backend/ tidak dapat diakses langsung melalui HTTP
+[ ] Private storage terlindungi
+[ ] Backup database aktif
+[ ] Backup dokumen privat aktif
+[ ] Hak akses hosting dibatasi
+[ ] SOP layanan sudah diverifikasi
+[ ] Kontak pemerintah sudah diverifikasi
+[ ] Data APBG sudah diverifikasi
+[ ] Kebijakan retensi data sudah dibuat
+```
 
+---
 
-# Checklist Produksi Final
+# SEO Production Checklist
 
-1. Gunakan HTTPS dan set `BASE_URL` ke URL HTTPS final.
-2. Gunakan `APP_KEY` acak minimal 32 karakter dan jangan pernah menggantinya setelah data terenkripsi tersimpan.
-3. Gunakan password database khusus dengan hak minimum; jangan memakai akun MySQL `root` di hosting produksi.
-4. Pastikan document root tidak memberi akses langsung ke `backend/`. `.htaccess` project sudah memblokirnya pada Apache.
-5. Backup database dan `backend/.env` secara aman.
-6. Isi SEO Title, Description, Keywords, dan SEO Image dari Dashboard.
-7. Daftarkan `/sitemap.xml` pada search engine setelah domain produksi aktif.
-8. Uji email/nomor layanan, peta, dan seluruh data publik sebelum rilis.
-9. Pertahankan PHP dan MySQL/MariaDB pada versi yang masih menerima security update.
+```text
+[ ] SEO Title diisi
+[ ] SEO Description diisi
+[ ] SEO Keywords diisi
+[ ] SEO Image diisi
+[ ] BASE_URL menggunakan domain final
+[ ] HTTPS aktif
+[ ] robots.txt dapat diakses
+[ ] sitemap.xml dapat diakses
+[ ] Sitemap didaftarkan ke search engine
+[ ] Article page dapat dibuka
+[ ] Canonical benar
+[ ] Open Graph benar
+```
+
+---
+
+# Laragon Troubleshooting
+
+## `php` Tidak Ditemukan
+
+Gunakan Terminal bawaan Laragon.
+
+Atau cek:
+
+```bash
+php -v
+```
+
+Laragon biasanya otomatis menyediakan PHP pada Terminal miliknya.
+
+---
+
+## Database Connection Failed
+
+Pastikan MySQL/MariaDB sudah aktif.
+
+Periksa:
+
+```env
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_NAME=gampong_lamgugob
+DB_USER=root
+DB_PASS=
+```
+
+Untuk local Laragon, user default sering:
+
+```text
+root
+```
+
+dengan password kosong, tetapi konfigurasi Laragon milikmu bisa berbeda.
+
+---
+
+## `APP_KEY is missing`
+
+Generate:
+
+```bash
+php -r "echo bin2hex(random_bytes(32)), PHP_EOL;"
+```
+
+Masukkan ke:
+
+```env
+APP_KEY=
+```
+
+---
+
+## Website 404 pada `.test`
+
+Restart Laragon:
+
+```text
+Stop All
+Start All
+```
+
+Kemudian coba:
+
+```text
+http://gampong-lamgugob.test
+```
+
+---
+
+## `.htaccess` Tidak Bekerja
+
+Pastikan menggunakan Apache dan module rewrite aktif.
+
+Pada Laragon biasanya konfigurasi Apache sudah siap untuk local development.
+
+---
+
+## Upload Gagal
+
+Periksa `php.ini`.
+
+Nilai yang perlu cukup besar:
+
+```ini
+upload_max_filesize = 8M
+post_max_size = 10M
+```
+
+Restart Apache setelah mengubah konfigurasi PHP.
+
+---
+
+# Development Flow
+
+```mermaid
+flowchart LR
+
+A[VS Code] --> B[Laragon]
+B --> C[PHP]
+B --> D[MySQL]
+C --> E[REST API]
+D --> E
+E --> F[Frontend]
+F --> G[Browser]
+```
+
+---
+
+# Production Architecture
+
+```mermaid
+flowchart TD
+
+A[Client Browser]
+A --> B[HTTPS Web Server]
+
+B --> C[Public PHP]
+B --> D[Admin PHP]
+
+C --> E[API]
+D --> E
+
+E --> F[(MySQL / MariaDB)]
+E --> G[Private Storage]
+E --> H[Public Media]
+
+I[RBAC] --> E
+J[CSRF / Rate Limit] --> E
+K[Encryption] --> E
+```
+
+---
+
+# Prinsip Keamanan
+
+Jangan mengandalkan UI untuk authorization.
+
+Contoh:
+
+```text
+Menu disembunyikan
+```
+
+bukan berarti endpoint aman.
+
+Keamanan utama berada di backend:
+
+```text
+Authentication
+   ↓
+Session
+   ↓
+Permission
+   ↓
+Endpoint
+   ↓
+Database
+```
+
+---
+
+# Data Privacy
+
+Jangan meletakkan:
+
+```text
+NIK
+Nomor telepon warga
+Alamat warga
+Dokumen pribadi
+Password
+APP_KEY
+Database password
+```
+
+di:
+
+```text
+HTML
+JavaScript
+localStorage
+Git repository publik
+README
+```
+
+Gunakan backend dan storage privat.
+
+---
+
+# Backup
+
+Minimal backup:
+
+```text
+Database MySQL / MariaDB
+backend/.env
+backend/storage/private
+assets/uploads
+```
+
+Untuk server produksi, backup sebaiknya dijalankan berkala dan disimpan terpisah dari server utama.
+
+---
+
+# Final Project Standard
+
+Project mengikuti prinsip:
+
+```text
+NO DUMMY
+NO HARDCODED PUBLIC DATA
+
+ADMIN
+  ↓
+DATABASE
+  ↓
+API
+  ↓
+PUBLIC WEBSITE
+```
+
+serta:
+
+```text
+GUEST
+  ↓
+PUBLIC PORTAL
+
+WARGA
+  ↓
+ACCOUNT + PUBLIC PORTAL
+
+OPERATOR
+  ↓
+SERVICE WORKFLOW
+
+ADMIN
+  ↓
+CONTENT MANAGEMENT
+
+SUPER ADMIN
+  ↓
+SYSTEM MANAGEMENT
+```
+
+---
+
+<div align="center">
+
+### Portal Gampong Full-Stack
+
+PHP 8+ · MySQL/MariaDB · Vanilla JavaScript · Laragon · RBAC · PWA · SEO · Responsive
+
+<img src="https://img.shields.io/badge/Architecture-Data%20Driven-166534?style=for-the-badge" alt="Data Driven">
+<img src="https://img.shields.io/badge/Security-Production%20Ready-0F766E?style=for-the-badge" alt="Security">
+<img src="https://img.shields.io/badge/Development-Laragon-2563EB?style=for-the-badge" alt="Laragon">
+
+</div>
