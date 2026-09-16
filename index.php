@@ -24,7 +24,16 @@ $schema = [
     'logo' => $logo,
     'image' => $image,
 ];
-if ($location !== '') $schema['address'] = ['@type'=>'PostalAddress','addressLocality'=>$location,'streetAddress'=>(string)($settings['office_address'] ?? '')];
+if ($location !== '') $schema['address'] = [
+    '@type'=>'PostalAddress',
+    'streetAddress'=>(string)($settings['office_address'] ?? ''),
+    'addressLocality'=>(string)($settings['city'] ?? ''),
+    'addressRegion'=>(string)($settings['province'] ?? ''),
+    'postalCode'=>(string)($settings['postal_code'] ?? ''),
+    'addressCountry'=>'ID',
+];
+if (!empty($settings['village_code'])) $schema['identifier'] = (string)$settings['village_code'];
+if (!empty($settings['district']) || !empty($settings['city'])) $schema['areaServed'] = trim(implode(', ', array_filter([(string)($settings['district'] ?? ''),(string)($settings['city'] ?? ''),(string)($settings['province'] ?? '')])));
 if (!empty($settings['office_phone'])) $schema['telephone'] = (string)$settings['office_phone'];
 if (!empty($settings['office_email'])) $schema['email'] = (string)$settings['office_email'];
 $seoHead = '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) . '</script>';

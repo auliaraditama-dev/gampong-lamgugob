@@ -21,6 +21,10 @@ ServerSignature Off
 
 <IfModule mod_headers.c>
   Header always unset X-Powered-By
+  <FilesMatch "^(sw\.js|manifest\.php)$">
+    Header always set Cache-Control "no-cache, no-store, must-revalidate"
+    Header always set Pragma "no-cache"
+  </FilesMatch>
   Header always set X-Content-Type-Options "nosniff"
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"

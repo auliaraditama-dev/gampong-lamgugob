@@ -530,3 +530,18 @@ html[data-theme="dark"] .account-page .btn-primary { color:#062017; }
   .profile-topbar .brand-mark { width:40px;height:40px; }
   .profile-sidebar nav { margin-inline:-12px;padding-inline:12px;border-inline:0;border-radius:0; }
 }
+
+/* Production mobile hardening */
+.account-page{max-width:100%;overflow-x:hidden}
+.auth-page-shell,.auth-side-panel,.auth-form-panel,.profile-layout-page,.profile-main,.profile-content{min-width:0}
+@media(max-width:680px){
+  .auth-toolbar,.profile-topbar-inner{padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}
+  .auth-form-wrap,.auth-form-wide{padding-bottom:max(48px,env(safe-area-inset-bottom))}
+  .profile-main{padding-bottom:max(38px,env(safe-area-inset-bottom))}
+  input,select,textarea{font-size:16px}
+}
+@media(max-width:360px){
+  .auth-form-wrap,.auth-form-wide{width:calc(100% - 24px)}
+  .profile-container{width:calc(100% - 18px)}
+  .profile-section{padding:18px 13px}
+}

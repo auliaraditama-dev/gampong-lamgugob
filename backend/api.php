@@ -40,35 +40,60 @@ function settingsArray(): array
     return $data;
 }
 
+function publicQueryRows(PDO $pdo, string $sql, array $params = [], string $label = ''): array
+{
+    try {
+        if ($params) {
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll();
+        }
+        return $pdo->query($sql)->fetchAll();
+    } catch (PDOException $e) {
+        $driverCode = (int) ($e->errorInfo[1] ?? 0);
+        if (in_array($driverCode, [1054, 1146], true)) {
+            error_log('[Portal public data] Modul dilewati karena schema belum lengkap' . ($label !== '' ? " ({$label})" : '') . ': ' . $e->getMessage());
+            return [];
+        }
+        throw $e;
+    }
+}
+
 function publicContentData(): array
 {
     $pdo = db();
     $settings = publicSettingsMap();
-    $officials = $pdo->query("SELECT id,name,position,description,photo_url,sort_order FROM government_officials WHERE is_published=1 ORDER BY sort_order,id")->fetchAll();
-    $institutions = $pdo->query("SELECT id,name,short_name,description,icon,sort_order FROM institutions WHERE is_published=1 ORDER BY sort_order,id")->fetchAll();
-    $services = $pdo->query("SELECT id,name,category,description,icon,estimated_time,flow_text,sort_order,is_online FROM services WHERE is_published=1 ORDER BY sort_order,id")->fetchAll();
-    $reqStmt = $pdo->prepare('SELECT id,requirement_text,sort_order FROM service_requirements WHERE service_id=? ORDER BY sort_order,id');
+    $officials = publicQueryRows($pdo, "SELECT id,name,position,description,photo_url,sort_order FROM government_officials WHERE is_published=1 ORDER BY sort_order,id", [], 'officials');
+    $institutions = publicQueryRows($pdo, "SELECT id,name,short_name,description,icon,sort_order FROM institutions WHERE is_published=1 ORDER BY sort_order,id", [], 'institutions');
+    $services = publicQueryRows($pdo, "SELECT id,name,category,description,icon,estimated_time,flow_text,sort_order,is_online FROM services WHERE is_published=1 ORDER BY sort_order,id", [], 'services');
     foreach ($services as &$service) {
-        $reqStmt->execute([$service['id']]);
-        $service['requirements'] = $reqStmt->fetchAll();
+        $service['requirements'] = publicQueryRows($pdo, 'SELECT id,requirement_text,sort_order FROM service_requirements WHERE service_id=? ORDER BY sort_order,id', [(int) $service['id']], 'service_requirements');
     }
     unset($service);
-    $population = $pdo->query("SELECT id,stat_key,label,stat_value,unit,data_year,icon,is_featured,sort_order FROM population_statistics WHERE is_published=1 ORDER BY sort_order,id")->fetchAll();
-    $posts = $pdo->query("SELECT id,type,title,slug,excerpt,content,category,image_url,source_url,published_at FROM posts WHERE is_published=1 AND (published_at IS NULL OR published_at<=NOW()) ORDER BY COALESCE(published_at,created_at) DESC LIMIT 100")->fetchAll();
-    $agendas = $pdo->query("SELECT id,title,category,description,location,start_at,end_at FROM agendas WHERE is_published=1 AND start_at>=DATE_SUB(NOW(),INTERVAL 1 DAY) ORDER BY start_at ASC LIMIT 100")->fetchAll();
-    $umkm = $pdo->query("SELECT id,name,category,description,owner_name,contact,address,image_url,is_verified FROM umkm WHERE is_published=1 ORDER BY is_verified DESC,updated_at DESC LIMIT 100")->fetchAll();
-    $galleries = $pdo->query("SELECT id,title,caption,image_url,event_date FROM galleries WHERE is_published=1 ORDER BY COALESCE(event_date,DATE(created_at)) DESC,id DESC LIMIT 100")->fetchAll();
-    $budget = $pdo->query("SELECT id,budget_year,field_name,budget_amount,realization_amount,description FROM budget_items WHERE is_published=1 ORDER BY budget_year DESC,id")->fetchAll();
-    $projects = $pdo->query("SELECT id,title,category,description,location,budget_amount,progress_percent,status,start_date,end_date,image_url,sort_order FROM development_projects WHERE is_published=1 ORDER BY sort_order,id DESC")->fetchAll();
-    $faqs = $pdo->query("SELECT id,question,answer,sort_order FROM faqs WHERE is_published=1 ORDER BY sort_order,id")->fetchAll();
-    $quickLinks = $pdo->query("SELECT id,title,subtitle,url,icon,sort_order FROM quick_links WHERE is_published=1 ORDER BY sort_order,id")->fetchAll();
-    $socialLinks = $pdo->query("SELECT id,platform,label,url,icon,sort_order FROM social_links WHERE is_published=1 ORDER BY sort_order,id")->fetchAll();
-    $externalLinks = $pdo->query("SELECT id,label,url,sort_order FROM external_links WHERE is_published=1 ORDER BY sort_order,id")->fetchAll();
-    $sources = $pdo->query("SELECT id,title,description,url,sort_order FROM data_sources WHERE is_published=1 ORDER BY sort_order,id")->fetchAll();
+    $population = publicQueryRows($pdo, "SELECT id,stat_key,label,stat_value,unit,data_year,icon,is_featured,sort_order FROM population_statistics WHERE is_published=1 ORDER BY sort_order,id", [], 'population');
+    $posts = publicQueryRows($pdo, "SELECT id,type,title,slug,excerpt,content,category,image_url,source_url,published_at FROM posts WHERE is_published=1 AND (published_at IS NULL OR published_at<=NOW()) ORDER BY COALESCE(published_at,created_at) DESC LIMIT 100", [], 'posts');
+    $agendas = publicQueryRows($pdo, "SELECT id,title,category,description,location,start_at,end_at FROM agendas WHERE is_published=1 AND start_at>=DATE_SUB(NOW(),INTERVAL 1 DAY) ORDER BY start_at ASC LIMIT 100", [], 'agendas');
+    $umkm = publicQueryRows($pdo, "SELECT id,name,category,description,owner_name,contact,address,image_url,is_verified FROM umkm WHERE is_published=1 ORDER BY is_verified DESC,updated_at DESC LIMIT 100", [], 'umkm');
+    $galleries = publicQueryRows($pdo, "SELECT id,title,caption,image_url,event_date FROM galleries WHERE is_published=1 ORDER BY COALESCE(event_date,DATE(created_at)) DESC,id DESC LIMIT 100", [], 'galleries');
+    $budget = publicQueryRows($pdo, "SELECT id,budget_year,field_name,budget_amount,realization_amount,description FROM budget_items WHERE is_published=1 ORDER BY budget_year DESC,id", [], 'budget');
+    $projects = publicQueryRows($pdo, "SELECT id,title,category,description,location,budget_amount,progress_percent,status,start_date,end_date,image_url,sort_order FROM development_projects WHERE is_published=1 ORDER BY sort_order,id DESC", [], 'projects');
+    $faqs = publicQueryRows($pdo, "SELECT id,question,answer,sort_order FROM faqs WHERE is_published=1 ORDER BY sort_order,id", [], 'faqs');
+    $quickLinks = publicQueryRows($pdo, "SELECT id,title,subtitle,url,icon,sort_order FROM quick_links WHERE is_published=1 ORDER BY sort_order,id", [], 'quickLinks');
+    $socialLinks = publicQueryRows($pdo, "SELECT id,platform,label,url,icon,sort_order FROM social_links WHERE is_published=1 ORDER BY sort_order,id", [], 'socialLinks');
+    $externalLinks = publicQueryRows($pdo, "SELECT id,label,url,sort_order FROM external_links WHERE is_published=1 ORDER BY sort_order,id", [], 'externalLinks');
+    $sources = publicQueryRows($pdo, "SELECT id,title,description,url,sort_order FROM data_sources WHERE is_published=1 ORDER BY sort_order,id", [], 'sources');
+    $areas = publicQueryRows($pdo, "SELECT id,name,area_type,parent_name,population,data_year,description,verification_status,source_url,sort_order FROM village_areas WHERE is_published=1 ORDER BY area_type,sort_order,id", [], 'areas');
+    $boundaries = publicQueryRows($pdo, "SELECT id,direction,neighbor,description,verification_status,source_url,sort_order FROM village_boundaries WHERE is_published=1 ORDER BY sort_order,id", [], 'boundaries');
+    $facilities = publicQueryRows($pdo, "SELECT id,name,category,address,description,verification_status,source_url,sort_order FROM public_facilities WHERE is_published=1 ORDER BY sort_order,id", [], 'facilities');
+    $milestones = publicQueryRows($pdo, "SELECT id,slug,event_year,event_date,title,description,verification_status,source_url,sort_order FROM village_milestones WHERE is_published=1 ORDER BY event_year DESC,event_date DESC,sort_order,id", [], 'milestones');
+    $mosqueManagement = publicQueryRows($pdo, "SELECT id,position,name,period_label,last_verified_at,description,verification_status,source_url,sort_order FROM mosque_management WHERE is_published=1 ORDER BY sort_order,id", [], 'mosqueManagement');
+    $mosquePrograms = publicQueryRows($pdo, "SELECT id,title,category,schedule_text,description,last_verified_at,verification_status,source_url,sort_order FROM mosque_programs WHERE is_published=1 ORDER BY sort_order,id", [], 'mosquePrograms');
+    $mosqueFacilities = publicQueryRows($pdo, "SELECT id,name,description,last_verified_at,verification_status,source_url,sort_order FROM mosque_facilities WHERE is_published=1 ORDER BY sort_order,id", [], 'mosqueFacilities');
 
     return compact(
         'settings','officials','institutions','services','population','posts','agendas','umkm','galleries',
-        'budget','projects','faqs','quickLinks','socialLinks','externalLinks','sources'
+        'budget','projects','faqs','quickLinks','socialLinks','externalLinks','sources','areas','boundaries','facilities','milestones',
+        'mosqueManagement','mosquePrograms','mosqueFacilities'
     );
 }
 
@@ -409,6 +434,10 @@ function adminDashboard(): never
             'umkm' => (int) $pdo->query('SELECT COUNT(*) FROM umkm')->fetchColumn(),
             'gallery' => (int) $pdo->query('SELECT COUNT(*) FROM galleries')->fetchColumn(),
             'officials' => (int) $pdo->query('SELECT COUNT(*) FROM government_officials')->fetchColumn(),
+            'areas' => (int) $pdo->query('SELECT COUNT(*) FROM village_areas')->fetchColumn(),
+            'facilities' => (int) $pdo->query('SELECT COUNT(*) FROM public_facilities')->fetchColumn(),
+            'mosque_programs' => (int) $pdo->query('SELECT COUNT(*) FROM mosque_programs')->fetchColumn(),
+            'sources' => (int) $pdo->query('SELECT COUNT(*) FROM data_sources')->fetchColumn(),
         ];
         if (($admin['role'] ?? '') === 'superadmin') $counts['citizens'] = (int) $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
         $settings = settingsArray();
@@ -418,6 +447,10 @@ function adminDashboard(): never
             'Pimpinan' => !empty($settings['keuchik_name']),
             'Kontak & peta' => !empty($settings['office_address']) && (!empty($settings['office_phone']) || !empty($settings['office_email'])),
             'Perangkat gampong' => $counts['officials'] > 0,
+            'Wilayah & dusun' => $counts['areas'] > 0,
+            'Fasilitas publik' => $counts['facilities'] > 0,
+            'Data Masjid Syuhada' => !empty($settings['mosque_name']) && $counts['mosque_programs'] > 0,
+            'Sumber data' => $counts['sources'] > 0,
             'Layanan publik' => $counts['services'] > 0,
             'Statistik penduduk' => (int) $pdo->query('SELECT COUNT(*) FROM population_statistics')->fetchColumn() > 0,
             'Konten informasi' => ($counts['posts'] + $counts['agendas']) > 0,
@@ -495,6 +528,13 @@ function cmsMap(): array
         'social' => ['table'=>'social_links','fields'=>['platform','label','url','icon','sort_order','is_published'],'boolean'=>['is_published'],'order'=>'sort_order,id','long'=>[]],
         'external' => ['table'=>'external_links','fields'=>['label','url','sort_order','is_published'],'boolean'=>['is_published'],'order'=>'sort_order,id','long'=>[]],
         'sources' => ['table'=>'data_sources','fields'=>['title','description','url','sort_order','is_published'],'boolean'=>['is_published'],'order'=>'sort_order,id','long'=>['description']],
+        'areas' => ['table'=>'village_areas','fields'=>['name','area_type','parent_name','population','data_year','description','verification_status','source_url','sort_order','is_published'],'boolean'=>['is_published'],'order'=>'area_type,sort_order,id','long'=>['description']],
+        'boundaries' => ['table'=>'village_boundaries','fields'=>['direction','neighbor','description','verification_status','source_url','sort_order','is_published'],'boolean'=>['is_published'],'order'=>'sort_order,id','long'=>['neighbor','description']],
+        'facilities' => ['table'=>'public_facilities','fields'=>['name','category','address','description','verification_status','source_url','sort_order','is_published'],'boolean'=>['is_published'],'order'=>'sort_order,id','long'=>['address','description']],
+        'milestones' => ['table'=>'village_milestones','fields'=>['slug','event_year','event_date','title','description','verification_status','source_url','sort_order','is_published'],'boolean'=>['is_published'],'order'=>'event_year DESC,event_date DESC,sort_order,id','long'=>['description']],
+        'mosque_management' => ['table'=>'mosque_management','fields'=>['position','name','period_label','last_verified_at','description','verification_status','source_url','sort_order','is_published'],'boolean'=>['is_published'],'order'=>'sort_order,id','long'=>['description']],
+        'mosque_programs' => ['table'=>'mosque_programs','fields'=>['title','category','schedule_text','description','last_verified_at','verification_status','source_url','sort_order','is_published'],'boolean'=>['is_published'],'order'=>'sort_order,id','long'=>['description']],
+        'mosque_facilities' => ['table'=>'mosque_facilities','fields'=>['name','description','last_verified_at','verification_status','source_url','sort_order','is_published'],'boolean'=>['is_published'],'order'=>'sort_order,id','long'=>['description']],
     ];
 }
 
@@ -533,8 +573,8 @@ function cmsSave(): never
         if (!array_key_exists($field, $data)) continue;
         $value = in_array($field, $cfg['boolean'], true) ? boolInt($data[$field]) : cleanText($data[$field], in_array($field, $cfg['long'] ?? [], true) ? 30000 : 2500);
         if ($field === 'slug' && $value === '') $value = slugify((string) ($data['title'] ?? '')) . '-' . substr(bin2hex(random_bytes(3)), 0, 6);
-        if (in_array($field, ['published_at','start_at','end_at','event_date','start_date','end_date'], true) && $value === '') $value = null;
-        if (in_array($field, ['sort_order','data_year','budget_year'], true)) $value = $value === '' ? 0 : (int) $value;
+        if (in_array($field, ['published_at','start_at','end_at','event_date','start_date','end_date','last_verified_at'], true) && $value === '') $value = null;
+        if (in_array($field, ['sort_order','data_year','budget_year','event_year','population'], true)) $value = $value === '' ? 0 : (int) $value;
         if (in_array($field, ['stat_value','budget_amount','realization_amount','progress_percent'], true)) $value = $value === '' ? 0 : (float) $value;
         $values[$field] = $value;
     }
@@ -596,12 +636,14 @@ function cmsDelete(): never
 function settingKeys(): array
 {
     return [
-        'village_name','village_short_name','district','city','province','postal_code','ticket_prefix','office_address','office_phone','office_email','office_hours',
+        'village_name','village_short_name','village_code','district','city','province','postal_code','mukim_name','timezone_name','area_km2','district_area_percent','village_data_year','ticket_prefix','office_address','office_phone','office_email','office_hours',
         'logo_url','profile_image_url','hero_eyebrow','hero_title','hero_subtitle','hero_background_url','keuchik_name','keuchik_title','keuchik_message','keuchik_photo_url',
         'profile_heading','profile_summary','profile_history','vision','mission','profile_values','profile_commitment',
         'government_heading','government_summary','services_heading','services_summary','data_heading','data_summary','transparency_heading','transparency_summary',
         'news_heading','news_summary','umkm_heading','umkm_summary','gallery_heading','gallery_summary','complaint_heading','complaint_summary','complaint_categories',
-        'faq_heading','faq_summary','contact_heading','contact_summary','map_embed_url','map_direction_url','footer_description','seo_title','seo_description','seo_keywords','seo_image_url'
+        'faq_heading','faq_summary','territory_heading','territory_summary','facilities_heading','facilities_summary','timeline_heading','timeline_summary',
+        'mosque_heading','mosque_summary','mosque_name','mosque_address','mosque_location_code','mosque_history','mosque_data_note','data_disclaimer',
+        'contact_heading','contact_summary','map_embed_url','map_direction_url','administrative_map_image_url','administrative_map_title','administrative_map_source','administrative_map_note','footer_description','seo_title','seo_description','seo_keywords','seo_image_url'
     ];
 }
 
@@ -621,7 +663,7 @@ function settingsSave(): never
     $stmt = db()->prepare('INSERT INTO settings (setting_key,setting_value) VALUES (?,?) ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value)');
     foreach ($settings as $key => $value) {
         if (!in_array($key, $allowed, true)) continue;
-        $max = in_array($key, ['profile_history','vision','mission','profile_values','profile_commitment','complaint_categories'], true) ? 30000 : 5000;
+        $max = in_array($key, ['profile_history','vision','mission','profile_values','profile_commitment','complaint_categories','mosque_history','mosque_data_note','data_disclaimer','administrative_map_note'], true) ? 30000 : 5000;
         $stmt->execute([$key, cleanText($value, $max)]);
     }
     adminAudit('update', 'settings');

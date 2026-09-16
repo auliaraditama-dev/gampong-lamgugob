@@ -13,7 +13,7 @@
     if (!url) return '';
     if (url.startsWith('#') || url.startsWith('assets/') || url.startsWith('./') || url.startsWith('../')) return url;
     try {
-      const parsed = new URL(url, location.href);
+      const parsed = new URL(url, window.location.href);
       return ['http:', 'https:'].includes(parsed.protocol) ? url : '';
     } catch { return ''; }
   };
@@ -46,7 +46,7 @@
     const method = String(options.method || 'GET').toUpperCase();
     const headers = new Headers(options.headers || {});
     if (state.auth.csrf && method !== 'GET') headers.set('X-CSRF-Token', state.auth.csrf);
-    const response = await fetch(`${API}?action=${encodeURIComponent(action)}${query}`, { credentials:'same-origin', ...options, method, headers });
+    const response = await fetch(`${API}?action=${encodeURIComponent(action)}${query}`, { credentials:'same-origin', cache:'no-store', ...options, method, headers });
     let result;
     try { result = await response.json(); } catch { throw new Error('Respons server tidak valid.'); }
     if (!response.ok || !result.success) throw new Error(result.message || 'Permintaan gagal.');
@@ -72,13 +72,13 @@
   function renderSettings(settings) {
     const village = settings.village_name || 'Portal Gampong';
     const short = settings.village_short_name || village;
-    const location = [settings.district, settings.city, settings.province].filter(Boolean).join(' · ');
+    const locationLabel = [settings.district, settings.city, settings.province].filter(Boolean).join(' · ');
     const cityLocation = [settings.district, settings.city].filter(Boolean).join(', ');
     const mark = initials(short);
 
     const seoTitle = settings.seo_title || village;
     const seoDescription = settings.seo_description || `Portal informasi dan layanan ${village}.`;
-    const canonical = new URL('./', location.href).href;
+    const canonical = new URL('./', window.location.href).href;
     const seoImage = mediaUrl(settings.seo_image_url || settings.logo_url || settings.hero_background_url);
     document.title = seoTitle;
     $('#metaDescription')?.setAttribute('content', seoDescription);
@@ -91,13 +91,13 @@
     $('#twitterTitle')?.setAttribute('content', seoTitle);
     $('#twitterDescription')?.setAttribute('content', seoDescription);
     if (seoImage) {
-      const absoluteImage = new URL(seoImage, location.href).href;
+      const absoluteImage = new URL(seoImage, window.location.href).href;
       $('#ogImage')?.setAttribute('content', absoluteImage);
       $('#twitterImage')?.setAttribute('content', absoluteImage);
     }
 
     text('#brandName', village); text('#footerBrandName', village); text('#copyrightName', village);
-    text('#brandLocation', location, 'Data wilayah belum diisi'); text('#footerBrandLocation', location, 'Data wilayah belum diisi');
+    text('#brandLocation', locationLabel, 'Data wilayah belum diisi'); text('#footerBrandLocation', locationLabel, 'Data wilayah belum diisi');
     text('#brandMark', mark); text('#footerBrandMark', mark);
     if (settings.logo_url && mediaUrl(settings.logo_url)) {
       const logo = `<img src="${escHtml(mediaUrl(settings.logo_url))}" alt="Logo ${escHtml(village)}">`;
@@ -136,18 +136,24 @@
 
     text('#governmentHeading', settings.government_heading, 'Struktur pemerintahan'); text('#governmentSummary', settings.government_summary, '');
     text('#servicesHeading', settings.services_heading, 'Layanan gampong'); text('#servicesSummary', settings.services_summary, '');
-    text('#dataHeading', settings.data_heading, 'Statistik gampong'); text('#dataSummary', settings.data_summary, '');
+    text('#dataHeading', settings.data_heading, 'Statistik gampong'); text('#dataSummary', settings.data_summary, ''); text('#dataDisclaimer', settings.data_disclaimer, '');
     text('#transparencyHeading', settings.transparency_heading, 'APBG dan pembangunan'); text('#transparencySummary', settings.transparency_summary, '');
     text('#newsHeading', settings.news_heading, 'Berita, pengumuman, dan agenda'); text('#newsSummary', settings.news_summary, '');
     text('#umkmHeading', settings.umkm_heading, 'UMKM dan ekonomi lokal'); text('#umkmSummary', settings.umkm_summary, '');
     text('#galleryHeading', settings.gallery_heading, 'Dokumentasi gampong'); text('#gallerySummary', settings.gallery_summary, '');
     text('#complaintHeading', settings.complaint_heading, 'Sampaikan aspirasi atau pengaduan'); text('#complaintSummary', settings.complaint_summary, '');
     text('#faqHeading', settings.faq_heading, 'Pertanyaan umum'); text('#faqSummary', settings.faq_summary, '');
+    text('#territoryHeading', settings.territory_heading, 'Wilayah, dusun, dan batas'); text('#territorySummary', settings.territory_summary, '');
+    text('#facilitiesHeading', settings.facilities_heading, 'Fasilitas di Lamgugob'); text('#facilitiesSummary', settings.facilities_summary, '');
+    text('#timelineHeading', settings.timeline_heading, 'Timeline Gampong'); text('#timelineSummary', settings.timeline_summary, '');
+    text('#mosqueHeading', settings.mosque_heading, settings.mosque_name || 'Masjid Besar Syuhada Lamgugob'); text('#mosqueSummary', settings.mosque_summary, '');
+    text('#mosqueNameLabel', settings.mosque_name, 'Masjid Besar Syuhada Lamgugob'); text('#mosqueHistory', settings.mosque_history, 'Belum ada sejarah masjid yang dipublikasikan.'); text('#mosqueDataNote', settings.mosque_data_note, '');
+    const mosqueMeta=[['Alamat',settings.mosque_address],['Kode lokasi',settings.mosque_location_code]].filter(([,v])=>v); $('#mosqueMeta').innerHTML=mosqueMeta.map(([l,v])=>`<div><span>${escHtml(l)}</span><strong>${escHtml(v)}</strong></div>`).join('');
     text('#contactHeading', settings.contact_heading, 'Kontak kantor gampong'); text('#contactSummary', settings.contact_summary, '');
     text('#footerDescription', settings.footer_description, '');
 
     const contacts = [
-      ['map-pin','Alamat',settings.office_address], ['building-2','Wilayah',location], ['mail','Email',settings.office_email], ['phone','Telepon / WhatsApp',settings.office_phone], ['clock-3','Jam Pelayanan',settings.office_hours]
+      ['map-pin','Alamat',settings.office_address], ['building-2','Wilayah',locationLabel], ['mail','Email',settings.office_email], ['phone','Telepon / WhatsApp',settings.office_phone], ['clock-3','Jam Pelayanan',settings.office_hours]
     ].filter(([, , v]) => v);
     $('#contactList').innerHTML = contacts.length ? contacts.map(([ic,label,value]) => `<div><span><i data-lucide="${ic}"></i></span><div><small>${escHtml(label)}</small><strong>${escHtml(value)}</strong></div></div>`).join('') : '<div class="empty-card">Informasi kontak belum diisi.</div>';
 
@@ -158,6 +164,26 @@
     $('#contactActions').innerHTML = actions.join('');
     const mapUrl = safeUrl(settings.map_embed_url);
     show($('#mapCard'), !!mapUrl); if (mapUrl) $('#mapFrame').src = mapUrl;
+
+    const administrativeMapImage = mediaUrl(settings.administrative_map_image_url) || 'assets/images/peta-administrasi-lamgugob.jpg';
+    const administrativeMapTitle = settings.administrative_map_title || 'Peta Administrasi Gampong Lamgugob';
+    const administrativeMapSource = settings.administrative_map_source || 'UPTD GIS Bappeda Kota Banda Aceh';
+    const administrativeMapNote = settings.administrative_map_note || 'Peta wilayah administrasi Gampong Lamgugob, Kecamatan Syiah Kuala, Kota Banda Aceh.';
+    show($('#administrativeMapCard'), !!administrativeMapImage);
+    if (administrativeMapImage) {
+      $('#administrativeMapImage').src = administrativeMapImage;
+      $('#administrativeMapImage').alt = administrativeMapTitle;
+      text('#administrativeMapTitle', administrativeMapTitle);
+      text('#administrativeMapSource', administrativeMapSource);
+      text('#administrativeMapNote', administrativeMapNote);
+      const mapButton = $('#administrativeMapButton');
+      mapButton.onclick = () => {
+        $('#lightboxImage').src = administrativeMapImage;
+        $('#lightboxImage').alt = administrativeMapTitle;
+        $('#lightboxCaption').textContent = `${administrativeMapTitle}${administrativeMapSource ? ` · ${administrativeMapSource}` : ''}`;
+        setModalState(lightbox, true);
+      };
+    }
 
     const categories = String(settings.complaint_categories || '').split(/\r?\n/).map(v=>v.trim()).filter(Boolean);
     $('#complaintCategory').innerHTML = categories.length ? `<option value="">Pilih kategori</option>${categories.map(v=>`<option>${escHtml(v)}</option>`).join('')}` : '<option value="">Belum ada kategori pengaduan</option>';
@@ -173,6 +199,33 @@
   }
   function renderInstitutions(rows) {
     $('#institutionsGrid').innerHTML = rows.length ? rows.map(row => `<article class="leader-card reveal"><span class="leader-avatar"><i data-lucide="${icon(row.icon,'users')}"></i></span><div><span class="mini-label">${escHtml(row.short_name || 'Lembaga')}</span><h3>${escHtml(row.name)}</h3><p>${escHtml(row.description || '')}</p></div></article>`).join('') : '<div class="empty-card">Belum ada lembaga gampong yang dipublikasikan.</div>';
+  }
+
+  function verificationMeta(status){
+    const map={verified:['Terverifikasi','verified'],historical:['Data historis','historical'],needs_confirmation:['Perlu konfirmasi','needs-confirmation']};
+    return map[String(status||'').toLowerCase()]||['Sumber tercatat','historical'];
+  }
+  function verificationBadge(status){const [label,cls]=verificationMeta(status);return `<span class="verification-badge ${cls}">${escHtml(label)}</span>`}
+  function sourceLink(url){const safe=safeUrl(url);return safe?`<a class="source-link" href="${escHtml(safe)}" target="_blank" rel="noopener noreferrer">Sumber <i data-lucide="external-link"></i></a>`:''}
+
+  function renderTerritory(areas,boundaries){
+    const grouped=[...areas].sort((a,b)=>String(a.area_type).localeCompare(String(b.area_type))||Number(a.sort_order)-Number(b.sort_order));
+    $('#areasGrid').innerHTML=grouped.length?grouped.map(row=>`<article class="territory-card reveal"><div class="card-head"><span class="mini-label">${escHtml(row.area_type==='ulee_jurong'?'Ulee Jurong':'Dusun')}</span>${verificationBadge(row.verification_status)}</div><h3>${escHtml(row.name)}</h3>${row.parent_name?`<p><strong>Induk:</strong> ${escHtml(row.parent_name)}</p>`:''}${row.population?`<p><strong>Penduduk:</strong> ${escHtml(numberId(row.population))} jiwa${row.data_year?` · ${escHtml(row.data_year)}`:''}</p>`:''}${row.description?`<p>${escHtml(row.description)}</p>`:''}${sourceLink(row.source_url)}</article>`).join(''):'<div class="empty-card">Belum ada data wilayah yang dipublikasikan.</div>';
+    $('#boundariesList').innerHTML=boundaries.length?boundaries.map(row=>`<article class="boundary-item"><span class="boundary-direction">${escHtml(row.direction)}</span><div><strong>${escHtml(row.neighbor)}</strong>${row.description?`<p>${escHtml(row.description)}</p>`:''}<div class="metadata-row">${verificationBadge(row.verification_status)}${sourceLink(row.source_url)}</div></div></article>`).join(''):'<div class="empty-card">Belum ada batas wilayah yang dipublikasikan.</div>';
+  }
+
+  function renderPublicFacilities(rows){
+    $('#facilitiesGrid').innerHTML=rows.length?rows.map(row=>`<article class="facility-card reveal"><span class="service-icon"><i data-lucide="${icon(row.category==='Kesehatan'?'heart-pulse':row.category==='Pendidikan'?'graduation-cap':row.category==='Keagamaan'?'landmark':'building-2')}"></i></span><span class="mini-label">${escHtml(row.category)}</span><h3>${escHtml(row.name)}</h3>${row.address?`<p><strong>Alamat:</strong> ${escHtml(row.address)}</p>`:''}${row.description?`<p>${escHtml(row.description)}</p>`:''}<div class="metadata-row">${verificationBadge(row.verification_status)}${sourceLink(row.source_url)}</div></article>`).join(''):'<div class="empty-card">Belum ada fasilitas publik yang dipublikasikan.</div>';
+  }
+
+  function renderMilestones(rows){
+    $('#timelineList').innerHTML=rows.length?rows.map(row=>`<article class="timeline-item reveal"><div class="timeline-year">${escHtml(row.event_year)}</div><div class="timeline-content"><div class="metadata-row">${verificationBadge(row.verification_status)}${row.event_date?`<span>${escHtml(fmtDateOnly(row.event_date))}</span>`:''}</div><h3>${escHtml(row.title)}</h3><p>${escHtml(row.description||'')}</p>${sourceLink(row.source_url)}</div></article>`).join(''):'<div class="empty-card">Belum ada timeline yang dipublikasikan.</div>';
+  }
+
+  function renderMosque(management,programs,facilities){
+    $('#mosqueManagementList').innerHTML=management.length?management.map(row=>`<div class="compact-item"><div><span class="mini-label">${escHtml(row.position)}</span><strong>${escHtml(row.name)}</strong><small>${escHtml(row.period_label||'')}${row.last_verified_at?` · diverifikasi ${escHtml(fmtDateOnly(row.last_verified_at))}`:''}</small></div><div>${verificationBadge(row.verification_status)}${sourceLink(row.source_url)}</div>${row.description?`<p>${escHtml(row.description)}</p>`:''}</div>`).join(''):'<div class="empty-card">Belum ada data pengurus yang dipublikasikan.</div>';
+    $('#mosqueProgramsList').innerHTML=programs.length?programs.map(row=>`<div class="compact-item"><div><span class="mini-label">${escHtml(row.category||'Program')}</span><strong>${escHtml(row.title)}</strong><small>${escHtml(row.schedule_text||'')}</small></div><div>${verificationBadge(row.verification_status)}${sourceLink(row.source_url)}</div>${row.description?`<p>${escHtml(row.description)}</p>`:''}</div>`).join(''):'<div class="empty-card">Belum ada program masjid yang dipublikasikan.</div>';
+    $('#mosqueFacilitiesList').innerHTML=facilities.length?facilities.map(row=>`<div class="compact-item"><div><strong>${escHtml(row.name)}</strong>${row.last_verified_at?`<small>Dokumentasi: ${escHtml(fmtDateOnly(row.last_verified_at))}</small>`:''}</div><div>${verificationBadge(row.verification_status)}${sourceLink(row.source_url)}</div>${row.description?`<p>${escHtml(row.description)}</p>`:''}</div>`).join(''):'<div class="empty-card">Belum ada fasilitas masjid yang dipublikasikan.</div>';
   }
 
   function renderServices(rows) {
@@ -215,7 +268,7 @@
       text('#genderTotal', numberId(total));
       $('#genderLegend').innerHTML=`<div><span class="dot dot-a"></span><b>${escHtml(male.label)}</b><strong>${escHtml(numberId(m))}</strong></div><div><span class="dot dot-b"></span><b>${escHtml(female.label)}</b><strong>${escHtml(numberId(f))}</strong></div>`;
     }
-    const facts=[['Kecamatan',settings.district],['Kota/Kabupaten',settings.city],['Provinsi',settings.province],['Kode Pos',settings.postal_code],['Pimpinan',settings.keuchik_name]].filter(([,v])=>v);
+    const facts=[['Kode Wilayah',settings.village_code],['Mukim',settings.mukim_name],['Kecamatan',settings.district],['Kota/Kabupaten',settings.city],['Provinsi',settings.province],['Kode Pos',settings.postal_code],['Luas Wilayah',settings.area_km2?`${settings.area_km2} km²`:'' ],['Persentase Luas Kecamatan',settings.district_area_percent?`${settings.district_area_percent}%`:'' ],['Tahun Data Utama',settings.village_data_year],['Zona Waktu',settings.timezone_name],['Pimpinan',settings.keuchik_name]].filter(([,v])=>v);
     $('#factsList').innerHTML=facts.length?facts.map(([l,v])=>`<div><span>${escHtml(l)}</span><strong>${escHtml(v)}</strong></div>`).join(''):'<div class="empty-inline">Informasi wilayah belum diisi.</div>';
   }
 
@@ -276,26 +329,74 @@
 
   function buildSearchIndex(data){
     const items=[]; const push=(title,desc,href)=>{if(title)items.push({title:String(title),desc:String(desc||''),href})};
-    push(data.settings.profile_heading||'Profil','Profil gampong','#profil');
-    data.services.forEach(r=>push(r.name,`${r.category} ${r.description||''}`,'#layanan'));
-    data.officials.forEach(r=>push(r.name,r.position,'#pemerintahan'));
-    data.institutions.forEach(r=>push(r.name,r.description,'#pemerintahan'));
-    data.population.forEach(r=>push(r.label,`${r.stat_value} ${r.unit||''}`,'#data'));
-    data.posts.forEach(r=>push(r.title,`${r.category||''} ${r.excerpt||''}`,'#berita'));
-    data.agendas.forEach(r=>push(r.title,`${r.category||''} ${r.description||''}`,'#agenda'));
-    data.umkm.forEach(r=>push(r.name,`${r.category} ${r.description||''}`,'#umkm'));
-    data.faqs.forEach(r=>push(r.question,r.answer,'#faq'));
-    data.projects.forEach(r=>push(r.title,r.description,'#transparansi'));
+    push(data.settings?.profile_heading||'Profil','Profil gampong','#profil');
+    (data.services||[]).forEach(r=>push(r.name,`${r.category||''} ${r.description||''}`,'#layanan'));
+    (data.officials||[]).forEach(r=>push(r.name,r.position,'#pemerintahan'));
+    (data.institutions||[]).forEach(r=>push(r.name,r.description,'#pemerintahan'));
+    (data.population||[]).forEach(r=>push(r.label,`${r.stat_value} ${r.unit||''}`,'#data'));
+    (data.posts||[]).forEach(r=>push(r.title,`${r.category||''} ${r.excerpt||''}`,'#berita'));
+    (data.agendas||[]).forEach(r=>push(r.title,`${r.category||''} ${r.description||''}`,'#agenda'));
+    (data.umkm||[]).forEach(r=>push(r.name,`${r.category||''} ${r.description||''}`,'#umkm'));
+    (data.faqs||[]).forEach(r=>push(r.question,r.answer,'#faq'));
+    (data.projects||[]).forEach(r=>push(r.title,r.description,'#transparansi'));
+    (data.areas||[]).forEach(r=>push(r.name,`${r.area_type} ${r.description||''}`,'#wilayah'));
+    (data.boundaries||[]).forEach(r=>push(`Batas ${r.direction}`,r.neighbor,'#wilayah'));
+    (data.facilities||[]).forEach(r=>push(r.name,`${r.category} ${r.address||''}`,'#fasilitas'));
+    (data.milestones||[]).forEach(r=>push(r.title,`${r.event_year} ${r.description||''}`,'#timeline'));
+    (data.mosqueManagement||[]).forEach(r=>push(r.name,`${r.position} ${r.period_label||''}`,'#masjid'));
+    (data.mosquePrograms||[]).forEach(r=>push(r.title,`${r.category||''} ${r.schedule_text||''}`,'#masjid'));
+    (data.mosqueFacilities||[]).forEach(r=>push(r.name,r.description||'','#masjid'));
     state.searchIndex=items;
   }
 
-  function renderAll(data){
-    state.data=data; renderSettings(data.settings||{}); renderQuickLinks(data.quickLinks||[]); renderOfficials(data.officials||[]); renderInstitutions(data.institutions||[]); renderServices(data.services||[]); renderPopulation(data.population||[],data.settings||{}); renderBudget(data.budget||[]); renderProjects(data.projects||[]); renderContent(data.posts||[],data.agendas||[]); renderUmkm(data.umkm||[]); renderGallery(data.galleries||[]); renderFaq(data.faqs||[]); renderSocial(data.socialLinks||[]); renderExternal(data.externalLinks||[]); renderSources(data.sources||[]); buildSearchIndex(data); initIcons(); bindReveal(); animateCounters();
+  function safeRender(name, callback){
+    try { callback(); }
+    catch (error) { console.error(`[Portal] Gagal merender ${name}:`, error); }
+  }
+
+  function normalizeContent(data){
+    const source=data&&typeof data==='object'?data:{};
+    const arrayKeys=['officials','institutions','services','population','posts','agendas','umkm','galleries','budget','projects','faqs','quickLinks','socialLinks','externalLinks','sources','areas','boundaries','facilities','milestones','mosqueManagement','mosquePrograms','mosqueFacilities'];
+    const normalized={...source,settings:source.settings&&typeof source.settings==='object'?source.settings:{}};
+    arrayKeys.forEach(key=>{if(!Array.isArray(normalized[key]))normalized[key]=[]});
+    return normalized;
+  }
+
+  function renderAll(rawData){
+    const data=normalizeContent(rawData);
+    state.data=data;
+    safeRender('pengaturan',()=>renderSettings(data.settings));
+    safeRender('akses cepat',()=>renderQuickLinks(data.quickLinks));
+    safeRender('perangkat gampong',()=>renderOfficials(data.officials));
+    safeRender('lembaga',()=>renderInstitutions(data.institutions));
+    safeRender('wilayah dan batas',()=>renderTerritory(data.areas,data.boundaries));
+    safeRender('Masjid Syuhada',()=>renderMosque(data.mosqueManagement,data.mosquePrograms,data.mosqueFacilities));
+    safeRender('fasilitas publik',()=>renderPublicFacilities(data.facilities));
+    safeRender('timeline',()=>renderMilestones(data.milestones));
+    safeRender('layanan',()=>renderServices(data.services));
+    safeRender('statistik',()=>renderPopulation(data.population,data.settings));
+    safeRender('APBG',()=>renderBudget(data.budget));
+    safeRender('pembangunan',()=>renderProjects(data.projects));
+    safeRender('berita dan agenda',()=>renderContent(data.posts,data.agendas));
+    safeRender('UMKM',()=>renderUmkm(data.umkm));
+    safeRender('galeri',()=>renderGallery(data.galleries));
+    safeRender('FAQ',()=>renderFaq(data.faqs));
+    safeRender('media sosial',()=>renderSocial(data.socialLinks));
+    safeRender('tautan eksternal',()=>renderExternal(data.externalLinks));
+    safeRender('sumber data',()=>renderSources(data.sources));
+    safeRender('indeks pencarian',()=>buildSearchIndex(data));
+    initIcons(); bindReveal(); animateCounters();
   }
 
   async function loadContent(){
-    try { const result=await apiFetch('content',{method:'GET'}); renderAll(result.data); }
-    catch(error){ showToast(`Backend belum dapat dimuat: ${error.message}`,'triangle-alert'); }
+    try {
+      const result=await apiFetch('content',{method:'GET'});
+      if(!result||!result.data||typeof result.data!=='object')throw new Error('Format data publik dari API tidak valid.');
+      renderAll(result.data);
+    } catch(error) {
+      console.error('[Portal] Gagal memuat data publik:',error);
+      showToast(`Data publik belum dapat dimuat: ${error.message}`,'triangle-alert');
+    }
   }
 
 
@@ -406,6 +507,6 @@
 
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){$$('.modal.open,.search-modal.open,.lightbox.open').forEach(el=>setModalState(el,false));mobileMenu.classList.remove('open')}});
   $('#year').textContent=new Date().getFullYear();
-  if('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+  if('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{}));
   initIcons(); bindReveal(); loadContent(); loadAuth();
 })();

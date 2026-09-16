@@ -8,12 +8,27 @@ if (!in_array('--yes', $argv, true)) {
     exit(1);
 }
 require __DIR__ . '/bootstrap.php';
+$pdo = db();
+$schemaSql = file_get_contents(__DIR__ . '/database/schema.sql') ?: '';
+foreach (preg_split('/;\s*(?:\r?\n|$)/', $schemaSql) ?: [] as $statement) {
+    $statement = trim($statement);
+    if ($statement !== '') $pdo->exec($statement);
+}
 $tables = [
     'service_requirements','services','government_officials','institutions','population_statistics','posts','agendas','umkm','galleries',
-    'budget_items','development_projects','faqs','quick_links','social_links','external_links','data_sources','service_requests','complaints','settings','rate_limits','audit_logs'
+    'budget_items','development_projects','faqs','quick_links','social_links','external_links','data_sources','village_areas','village_boundaries','public_facilities','village_milestones','mosque_management','mosque_programs','mosque_facilities','service_requests','complaints','settings','rate_limits','audit_logs'
 ];
-$pdo = db();
 $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
 foreach ($tables as $table) $pdo->exec("TRUNCATE TABLE `{$table}`");
 $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
-echo "Konten berhasil dikosongkan. Database sekarang tidak memiliki data dummy/konten publik.\n";
+if (in_array('--with-master-data', $argv, true)) {
+    $sql = file_get_contents(__DIR__ . '/database/seed.sql') ?: '';
+    foreach (preg_split('/;\s*(?:\r?\n|$)/', $sql) ?: [] as $statement) {
+        $statement = trim($statement);
+        if ($statement !== '') $pdo->exec($statement);
+    }
+    echo "Konten berhasil direset dan master data Lamgugob terverifikasi sudah dimasukkan kembali.\n";
+} else {
+    echo "Konten berhasil dikosongkan. Database sekarang tidak memiliki konten publik.\n";
+}
+

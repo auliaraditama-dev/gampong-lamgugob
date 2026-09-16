@@ -2,7 +2,7 @@
 <html lang="id" data-theme="light">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b6b4f">
   <meta name="color-scheme" content="light dark">
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
@@ -37,8 +37,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/redesign.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260916.4">
+  <link rel="stylesheet" href="assets/css/redesign.css?v=20260916.4">
   <link rel="manifest" href="manifest.php">
 </head>
 <body>
@@ -155,6 +155,46 @@
       </div>
     </section>
 
+    <section class="section section-muted" id="wilayah">
+      <div class="container">
+        <div class="section-heading reveal"><div><span class="eyebrow">Wilayah Gampong</span><h2 id="territoryHeading">Wilayah, dusun, dan batas</h2></div><p id="territorySummary"></p></div>
+        <div class="territory-layout">
+          <div><div class="subsection-title"><h3>Dusun & Ulee Jurong</h3></div><div class="territory-grid" id="areasGrid"><div class="empty-card">Belum ada data wilayah yang dipublikasikan.</div></div></div>
+          <div><div class="subsection-title"><h3>Batas Wilayah</h3></div><div class="boundary-list" id="boundariesList"><div class="empty-card">Belum ada batas wilayah yang dipublikasikan.</div></div></div>
+        </div>
+        <article class="administrative-map-card reveal" id="administrativeMapCard">
+          <button class="administrative-map-media" id="administrativeMapButton" type="button" aria-label="Perbesar peta administrasi Gampong Lamgugob">
+            <img id="administrativeMapImage" src="assets/images/peta-administrasi-lamgugob.jpg" alt="Peta Administrasi Gampong Lamgugob" loading="lazy">
+            <span class="administrative-map-zoom"><i data-lucide="maximize-2"></i> Perbesar peta</span>
+          </button>
+          <div class="administrative-map-copy">
+            <span class="mini-label">Peta Administrasi</span>
+            <h3 id="administrativeMapTitle">Peta Administrasi Gampong Lamgugob</h3>
+            <p id="administrativeMapNote">Peta wilayah administrasi Gampong Lamgugob, Kecamatan Syiah Kuala, Kota Banda Aceh.</p>
+            <div class="administrative-map-meta"><span><i data-lucide="map"></i><b id="administrativeMapSource">UPTD GIS Bappeda Kota Banda Aceh</b></span><span><i data-lucide="image"></i> Klik peta untuk melihat ukuran lebih besar</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section mosque-section" id="masjid">
+      <div class="container">
+        <div class="section-heading reveal"><div><span class="eyebrow">Masjid Besar Syuhada</span><h2 id="mosqueHeading">Masjid Besar Syuhada Lamgugob</h2></div><p id="mosqueSummary"></p></div>
+        <div class="mosque-profile-grid">
+          <article class="mosque-history-card reveal"><span class="mini-label" id="mosqueNameLabel">Masjid Besar Syuhada Lamgugob</span><h3>Sejarah & Identitas</h3><p id="mosqueHistory"></p><div class="mosque-meta" id="mosqueMeta"></div><p class="data-note" id="mosqueDataNote"></p></article>
+          <article class="mosque-panel reveal"><div class="card-head"><div><span class="mini-label">Data Pengelola</span><h3>Pengurus BKM</h3></div></div><div id="mosqueManagementList" class="compact-list"></div></article>
+        </div>
+        <div class="mosque-detail-grid">
+          <article class="mosque-panel reveal"><div class="card-head"><div><span class="mini-label">Kegiatan</span><h3>Program & Kajian</h3></div></div><div id="mosqueProgramsList" class="compact-list"></div></article>
+          <article class="mosque-panel reveal"><div class="card-head"><div><span class="mini-label">Sarana</span><h3>Fasilitas Terdokumentasi</h3></div></div><div id="mosqueFacilitiesList" class="compact-list"></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-muted" id="fasilitas">
+      <div class="container"><div class="section-heading reveal"><div><span class="eyebrow">Fasilitas Publik</span><h2 id="facilitiesHeading">Fasilitas di Lamgugob</h2></div><p id="facilitiesSummary"></p></div><div class="facility-grid" id="facilitiesGrid"><div class="empty-card">Belum ada fasilitas publik yang dipublikasikan.</div></div></div>
+    </section>
+
     <section class="section section-muted" id="pemerintahan">
       <div class="container">
         <div class="section-heading reveal"><div><span class="eyebrow">Pemerintahan</span><h2 id="governmentHeading">Struktur pemerintahan</h2></div><p id="governmentSummary">Data perangkat dan lembaga dikelola melalui dashboard admin.</p></div>
@@ -181,6 +221,7 @@
           <article class="chart-card reveal hidden-section" id="genderChartCard"><div class="card-head"><div><span class="mini-label">Komposisi Penduduk</span><h3 id="genderChartTitle">Penduduk menurut jenis kelamin</h3></div></div><div class="donut-wrap"><div class="donut" id="genderDonut"><div class="donut-center"><strong id="genderTotal">0</strong><span>jiwa</span></div></div><div class="legend" id="genderLegend"></div></div></article>
           <article class="chart-card reveal"><div class="card-head"><div><span class="mini-label">Ringkasan</span><h3>Informasi wilayah</h3></div></div><div class="facts-list" id="factsList"></div></article>
         </div>
+        <p class="data-disclaimer reveal" id="dataDisclaimer"></p>
       </div>
     </section>
 
@@ -192,6 +233,10 @@
           <div class="development-list reveal" id="developmentList"><div class="empty-card">Belum ada data pembangunan yang dipublikasikan.</div></div>
         </div>
       </div>
+    </section>
+
+    <section class="section timeline-section" id="timeline">
+      <div class="container"><div class="section-heading reveal"><div><span class="eyebrow">Jejak Lamgugob</span><h2 id="timelineHeading">Timeline Gampong</h2></div><p id="timelineSummary"></p></div><div class="timeline-list" id="timelineList"><div class="empty-card">Belum ada timeline yang dipublikasikan.</div></div></div>
     </section>
 
     <section class="section section-muted" id="berita">
@@ -227,7 +272,7 @@
     <section class="source-strip hidden-section" id="sourceStrip"><div class="container source-strip-inner"><div><i data-lucide="badge-check"></i><p><strong>Sumber data:</strong> <span id="sourceSummary"></span></p></div><button class="text-button" id="sourceButton">Lihat sumber <i data-lucide="arrow-right"></i></button></div></section>
   </main>
 
-  <footer class="footer"><div class="container footer-grid"><div class="footer-brand"><a class="brand light" href="#beranda"><span class="brand-mark" id="footerBrandMark">PG</span><span><strong id="footerBrandName">Portal Gampong</strong><small id="footerBrandLocation">Data wilayah belum diisi</small></span></a><p id="footerDescription"></p></div><div><h3>Navigasi</h3><a href="#profil">Profil Gampong</a><a href="#pemerintahan">Pemerintahan</a><a href="#data">Data Gampong</a><a href="#transparansi">Transparansi</a></div><div><h3>Layanan</h3><a href="#layanan">Layanan Surat</a><a href="#pengaduan">Aspirasi & Pengaduan</a><a href="#agenda">Agenda</a><a href="#umkm">UMKM</a></div><div><h3>Tautan</h3><div id="footerExternalLinks"><span class="footer-empty">Belum ada tautan eksternal.</span></div></div></div><div class="container footer-bottom"><p>© <span id="year"></span> <span id="copyrightName">Portal Gampong</span>.</p><p>Konten dikelola melalui Dashboard Admin.</p></div></footer>
+  <footer class="footer"><div class="container footer-grid"><div class="footer-brand"><a class="brand light" href="#beranda"><span class="brand-mark" id="footerBrandMark">PG</span><span><strong id="footerBrandName">Portal Gampong</strong><small id="footerBrandLocation">Data wilayah belum diisi</small></span></a><p id="footerDescription"></p></div><div><h3>Navigasi</h3><a href="#profil">Profil Gampong</a><a href="#wilayah">Wilayah & Dusun</a><a href="#masjid">Masjid Syuhada</a><a href="#pemerintahan">Pemerintahan</a><a href="#data">Data Gampong</a><a href="#transparansi">Transparansi</a></div><div><h3>Layanan</h3><a href="#layanan">Layanan Surat</a><a href="#pengaduan">Aspirasi & Pengaduan</a><a href="#agenda">Agenda</a><a href="#umkm">UMKM</a></div><div><h3>Tautan</h3><div id="footerExternalLinks"><span class="footer-empty">Belum ada tautan eksternal.</span></div></div></div><div class="container footer-bottom"><p>© <span id="year"></span> <span id="copyrightName">Portal Gampong</span>.</p><p>Konten dikelola melalui Dashboard Admin.</p></div></footer>
 
   <button class="back-to-top" id="backToTop" aria-label="Kembali ke atas"><i data-lucide="arrow-up"></i></button>
 
@@ -247,6 +292,6 @@
   <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
 
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-  <script src="assets/js/app.js"></script>
+  <script src="assets/js/app.js?v=20260916.4"></script>
 </body>
 </html>

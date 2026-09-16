@@ -25,7 +25,7 @@ function articleParagraphs(string $text): string { $parts=preg_split('/\R{2,}/u'
 ?><!doctype html>
 <html lang="id" data-theme="light">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#087352"><meta name="color-scheme" content="light dark">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#087352"><meta name="color-scheme" content="light dark">
 <script>(()=>{try{const s=localStorage.getItem('gampong-theme');const t=s==='dark'||s==='light'?s:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(_){}})();</script>
 <title><?=htmlEscape($title)?> · <?=htmlEscape($village)?></title>
 <meta name="description" content="<?=htmlEscape($description)?>"><meta name="robots" content="<?= $post?'index,follow,max-image-preview:large':'noindex,follow' ?>">

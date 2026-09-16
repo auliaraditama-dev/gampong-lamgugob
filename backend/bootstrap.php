@@ -119,12 +119,14 @@ function rateLimit(string $action, int $limit = 10, int $windowSeconds = 3600): 
 function publicSettingKeys(): array
 {
     return [
-        'village_name','village_short_name','district','city','province','postal_code','office_address','office_phone','office_email','office_hours',
+        'village_name','village_short_name','village_code','district','city','province','postal_code','mukim_name','timezone_name','area_km2','district_area_percent','village_data_year','office_address','office_phone','office_email','office_hours',
         'logo_url','profile_image_url','hero_eyebrow','hero_title','hero_subtitle','hero_background_url','keuchik_name','keuchik_title','keuchik_message','keuchik_photo_url',
         'profile_heading','profile_summary','profile_history','vision','mission','profile_values','profile_commitment',
         'government_heading','government_summary','services_heading','services_summary','data_heading','data_summary','transparency_heading','transparency_summary',
         'news_heading','news_summary','umkm_heading','umkm_summary','gallery_heading','gallery_summary','complaint_heading','complaint_summary','complaint_categories',
-        'faq_heading','faq_summary','contact_heading','contact_summary','map_embed_url','map_direction_url','footer_description','seo_title','seo_description','seo_keywords','seo_image_url'
+        'faq_heading','faq_summary','territory_heading','territory_summary','facilities_heading','facilities_summary','timeline_heading','timeline_summary',
+        'mosque_heading','mosque_summary','mosque_name','mosque_address','mosque_location_code','mosque_history','mosque_data_note','data_disclaimer',
+        'contact_heading','contact_summary','map_embed_url','map_direction_url','administrative_map_image_url','administrative_map_title','administrative_map_source','administrative_map_note','footer_description','seo_title','seo_description','seo_keywords','seo_image_url'
     ];
 }
 

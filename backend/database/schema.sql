@@ -321,3 +321,116 @@ CREATE TABLE IF NOT EXISTS audit_logs (
   INDEX idx_audit_created (created_at),
   CONSTRAINT fk_audit_admin FOREIGN KEY (admin_id) REFERENCES admins(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS village_areas (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(180) NOT NULL,
+  area_type VARCHAR(40) NOT NULL DEFAULT 'dusun',
+  parent_name VARCHAR(180) NULL,
+  population INT UNSIGNED NULL,
+  data_year SMALLINT UNSIGNED NULL,
+  description TEXT NULL,
+  verification_status VARCHAR(40) NOT NULL DEFAULT 'verified',
+  source_url VARCHAR(500) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uniq_village_area (area_type,name),
+  INDEX idx_area_public (is_published,area_type,sort_order,id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS village_boundaries (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  direction VARCHAR(40) NOT NULL,
+  neighbor TEXT NOT NULL,
+  description TEXT NULL,
+  verification_status VARCHAR(40) NOT NULL DEFAULT 'historical',
+  source_url VARCHAR(500) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uniq_boundary_direction (direction),
+  INDEX idx_boundary_public (is_published,sort_order,id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS public_facilities (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(220) NOT NULL,
+  category VARCHAR(100) NOT NULL,
+  address TEXT NULL,
+  description TEXT NULL,
+  verification_status VARCHAR(40) NOT NULL DEFAULT 'verified',
+  source_url VARCHAR(500) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uniq_public_facility_name (name),
+  INDEX idx_facility_public (is_published,category,sort_order,id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS village_milestones (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(220) NOT NULL UNIQUE,
+  event_year SMALLINT UNSIGNED NOT NULL,
+  event_date DATE NULL,
+  title VARCHAR(220) NOT NULL,
+  description TEXT NULL,
+  verification_status VARCHAR(40) NOT NULL DEFAULT 'verified',
+  source_url VARCHAR(500) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_milestone_public (is_published,event_year,event_date,sort_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS mosque_management (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  position VARCHAR(180) NOT NULL,
+  name VARCHAR(180) NOT NULL,
+  period_label VARCHAR(120) NULL,
+  last_verified_at DATE NULL,
+  description TEXT NULL,
+  verification_status VARCHAR(40) NOT NULL DEFAULT 'needs_confirmation',
+  source_url VARCHAR(500) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uniq_mosque_management (position,name,period_label),
+  INDEX idx_mosque_management_public (is_published,sort_order,id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS mosque_programs (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(220) NOT NULL UNIQUE,
+  category VARCHAR(100) NULL,
+  schedule_text VARCHAR(220) NULL,
+  description TEXT NULL,
+  last_verified_at DATE NULL,
+  verification_status VARCHAR(40) NOT NULL DEFAULT 'historical',
+  source_url VARCHAR(500) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_mosque_program_public (is_published,sort_order,id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS mosque_facilities (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(180) NOT NULL UNIQUE,
+  description TEXT NULL,
+  last_verified_at DATE NULL,
+  verification_status VARCHAR(40) NOT NULL DEFAULT 'historical',
+  source_url VARCHAR(500) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_mosque_facility_public (is_published,sort_order,id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

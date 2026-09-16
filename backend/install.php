@@ -32,11 +32,14 @@ $pdo = new PDO($serverDsn, $db['user'], $db['pass'], [PDO::ATTR_ERRMODE => PDO::
 $dbName = preg_replace('/[^a-zA-Z0-9_]/', '', $db['name']);
 $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$dbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
 $pdo->exec("USE `{$dbName}`");
-$sql = file_get_contents(__DIR__ . '/database/schema.sql') ?: '';
-foreach (preg_split('/;\s*(?:\r?\n|$)/', $sql) ?: [] as $statement) {
-    $statement = trim($statement);
-    if ($statement !== '') $pdo->exec($statement);
-}
+$executeSqlFile = static function (PDO $pdo, string $path): void {
+    $sql = file_get_contents($path) ?: '';
+    foreach (preg_split('/;\s*(?:\r?\n|$)/', $sql) ?: [] as $statement) {
+        $statement = trim($statement);
+        if ($statement !== '') $pdo->exec($statement);
+    }
+};
+$executeSqlFile($pdo, __DIR__ . '/database/schema.sql');
 
 $hasColumn = function (string $table, string $column) use ($pdo, $dbName): bool {
     $stmt = $pdo->prepare('SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND COLUMN_NAME=?');
@@ -72,8 +75,9 @@ if ($collision->fetchColumn()) {
 $hash = password_hash($password, PASSWORD_DEFAULT);
 $stmt = $pdo->prepare("INSERT INTO admins (name,email,password_hash,role) VALUES (?,?,?,'superadmin') ON DUPLICATE KEY UPDATE name=VALUES(name),password_hash=VALUES(password_hash),role='superadmin'");
 $stmt->execute([$name, strtolower($email), $hash]);
+$executeSqlFile($pdo, __DIR__ . '/database/seed.sql');
 
 echo "Instalasi selesai.\n";
 echo "Database: {$dbName}\n";
 echo "Admin: " . strtolower($email) . "\n";
-echo "Tidak ada konten dummy yang dimasukkan. Role warga/user dan migrasi user_id juga siap. Login ke /admin/ lalu isi data gampong dari dashboard.\n";
+echo "Master data Gampong Lamgugob terverifikasi sudah dimasukkan. Data yang belum terverifikasi tetap kosong dan dapat dilengkapi dari /admin/.\n";

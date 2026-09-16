@@ -44,28 +44,11 @@ Prinsip utama project:
 
 > Tidak ada data gampong dummy atau hard-coded pada halaman publik. Seluruh informasi yang dapat berubah dikelola melalui Dashboard Admin, disimpan di database, dikirim melalui API, lalu dirender ke website.
 
-Fresh install hanya membuat:
+Fresh install membuat database, seluruh tabel, akun Super Admin, lalu memasukkan **master data Lamgugob yang memiliki dasar sumber** dari `backend/database/seed.sql`.
 
-```text
-Database
-Tables
-Super Admin
-```
+Seed bawaan bukan data dummy. Isinya mencakup identitas resmi, statistik BPS, tiga dusun, Keuchik yang terverifikasi, data historis Masjid Besar Syuhada, fasilitas publik yang teridentifikasi, koperasi, timeline, FAQ faktual, tautan cepat, dan sumber data.
 
-Fresh install tidak membuat:
-
-```text
-Berita dummy
-Agenda dummy
-Data penduduk dummy
-APBG dummy
-Nama Keuchik dummy
-UMKM dummy
-Galeri dummy
-Kontak dummy
-```
-
-Jika suatu modul belum memiliki data, frontend menampilkan empty-state.
+Fresh install tetap **tidak membuat data yang belum terverifikasi**, termasuk APBG terbaru, daftar UMKM, perangkat selain Keuchik, kontak/jam pelayanan yang belum tersedia, foto, galeri, agenda aktif, serta SOP/persyaratan layanan yang belum diterbitkan. Modul tersebut menampilkan empty-state sampai Admin mengisinya.
 
 ---
 
@@ -99,6 +82,11 @@ Fitur tersedia:
 * Komitmen
 * Perangkat gampong
 * Lembaga
+* Wilayah, dusun, dan Ulee Jurong
+* Batas wilayah dengan status verifikasi
+* Masjid Besar Syuhada: sejarah, BKM, program, dan fasilitas
+* Fasilitas publik
+* Timeline gampong
 * Statistik penduduk
 * Statistik unggulan hero
 * Diagram penduduk
@@ -228,6 +216,11 @@ Admin
 ├── Profil
 ├── Perangkat
 ├── Lembaga
+├── Wilayah & Dusun
+├── Batas Wilayah
+├── Fasilitas Publik
+├── Masjid Syuhada
+├── Timeline Gampong
 ├── Statistik
 ├── Layanan
 ├── Persyaratan
@@ -897,6 +890,13 @@ quick_links
 social_links
 external_links
 data_sources
+village_areas
+village_boundaries
+public_facilities
+village_milestones
+mosque_management
+mosque_programs
+mosque_facilities
 service_requests
 complaints
 rate_limits
@@ -909,7 +909,7 @@ File:
 backend/database/seed.sql
 ```
 
-sengaja tidak mengandung konten dummy.
+berisi master data Lamgugob yang memiliki dasar sumber dan tidak mengandung data contoh/dummy.
 
 ---
 
@@ -950,6 +950,7 @@ gampong-lamgugob/
 │   ├── config.php
 │   ├── install.php
 │   ├── reset-content.php
+│   ├── seed-master-data.php
 │   ├── rbac-selftest.php
 │   ├── auth-selftest.php
 │   │
@@ -1192,7 +1193,8 @@ Membuat database
 Membuat tabel
 Membuat Super Admin
 Menjalankan migration/upgrade
-Tidak membuat konten dummy
+Memasukkan master data Lamgugob terverifikasi
+Tidak membuat data contoh/dummy atau data primer yang belum terverifikasi
 ```
 
 ---
@@ -1789,3 +1791,61 @@ PHP 8+ · MySQL/MariaDB · Vanilla JavaScript · Laragon · RBAC · PWA · SEO �
 <img src="https://img.shields.io/badge/Development-Laragon-2563EB?style=for-the-badge" alt="Laragon">
 
 </div>
+
+
+## Master data Lamgugob terverifikasi
+
+Project ini menyertakan `backend/database/seed.sql` berisi master data publik hasil verifikasi sampai 16 September 2026: identitas Gampong Lamgugob, kode wilayah 11.71.04.2007, Mukim Kayee Adang, tiga dusun, luas BPS 1,53 km², statistik penduduk 2024, Keuchik Amanullah, S.Ag., profil dan data historis Masjid Besar Syuhada, fasilitas publik teridentifikasi, koperasi, timeline, FAQ faktual, tautan cepat, dan sumber data.
+
+Data yang belum terverifikasi seperti susunan perangkat 2026 selain Keuchik, jam pelayanan, telepon/email resmi, APBG, daftar UMKM, SOP/persyaratan layanan, pengurus BKM pasca-periode 2021–2026, kapasitas masjid, dan data primer lainnya tidak dibuat-buat. Modul tetap tersedia dan menampilkan empty-state sampai Admin mengisinya.
+
+Fresh install menjalankan schema lalu seed master data otomatis. Untuk mengosongkan semua konten publik tanpa menghapus akun:
+
+```bash
+php backend/reset-content.php --yes
+```
+
+Untuk reset lalu mengisi kembali master data Lamgugob terverifikasi:
+
+```bash
+php backend/reset-content.php --yes --with-master-data
+```
+
+Untuk membuat tabel modul baru sekaligus memasukkan atau memperbarui master data pada database yang sudah ada tanpa reset:
+
+```bash
+php backend/seed-master-data.php
+```
+
+## Perbaikan sinkronisasi data publik — 16 September 2026
+
+Versi ini memperbaiki kasus data sudah tersimpan di MySQL/Admin tetapi halaman portal utama tetap menampilkan empty-state.
+
+Perbaikan yang diterapkan:
+
+- memperbaiki error JavaScript pada `renderSettings()` akibat nama variabel `location` menimpa `window.location` dan menyebabkan `Invalid URL` sebelum renderer data berjalan;
+- request `api.php?action=content` menggunakan `cache: no-store`;
+- asset frontend memakai version query agar browser tidak mempertahankan JavaScript lama yang rusak;
+- setiap modul public renderer diisolasi sehingga kegagalan satu komponen tidak menghentikan seluruh halaman;
+- payload API dinormalisasi sebelum dirender;
+- query modul publik baru toleran terhadap tabel/kolom yang belum termigrasi dan tetap menampilkan modul lama yang tersedia;
+- `sw.js` dipulihkan dan tidak meng-cache API, Admin, autentikasi, atau halaman akun;
+- Service Worker lama dibersihkan melalui versi cache baru.
+
+Untuk database lama, jalankan berikut tanpa menghapus data:
+
+```bash
+php backend/seed-master-data.php
+```
+
+Kemudian buka endpoint berikut dan pastikan `success` bernilai `true` serta array yang dibutuhkan berisi data:
+
+```text
+http://gampong-lamgugob.test/api.php?action=content
+```
+
+Data hanya ditampilkan pada portal publik apabila field `is_published` bernilai `1`. Untuk berita, `published_at` juga harus kosong atau tidak lebih besar dari waktu server. Agenda publik hanya menampilkan agenda yang belum lewat lebih dari satu hari.
+
+## Responsive production & peta administrasi
+
+Portal publik, halaman akun, artikel, dan dashboard admin menggunakan layout responsif untuk desktop, laptop, tablet, mobile, layar kecil, dan landscape. Peta Administrasi Gampong Lamgugob tersedia di section Wilayah dan dapat diperbesar melalui lightbox. Gambar peta, judul, sumber, dan catatan dapat diperbarui dari Admin → Identitas & Tampilan.
