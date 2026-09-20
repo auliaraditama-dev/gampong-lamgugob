@@ -13,9 +13,10 @@
     document.documentElement.dataset.theme=next;
     if(persist) localStorage.setItem('gampong-theme',next);
     const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',next==='dark'?'#09130f':'#087352');
-    const icon=next==='dark'?'☀':'☾';
+    const icon=next==='dark'?'sun':'moon';
     const label=next==='dark'?'Gunakan tema terang':'Gunakan tema gelap';
-    ['#adminThemeButton'].forEach(sel=>{const b=$(sel);if(b){b.textContent=icon;b.setAttribute('aria-label',label);b.title=label}});
+    ['#adminThemeButton'].forEach(sel=>{const b=$(sel);if(b){b.innerHTML=`<i data-lucide="${icon}"></i>`;b.setAttribute('aria-label',label);b.title=label}});
+    if(window.lucide)window.lucide.createIcons();
   }
   function toggleTheme(){applyTheme(currentTheme()==='dark'?'light':'dark',true)}
   applyTheme(currentTheme(),false);
@@ -24,13 +25,15 @@
     const headers={}; let payload=body;
     if(body && !(body instanceof FormData)){headers['Content-Type']='application/json';payload=JSON.stringify(body)}
     if(state.csrf && method!=='GET') headers['X-CSRF-Token']=state.csrf;
-    const res=await fetch(`${API}?action=${encodeURIComponent(action)}${query?`&${query}`:''}`,{method,headers,body:method==='GET'?null:payload,credentials:'same-origin'});
-    const ct=res.headers.get('content-type')||''; if(!ct.includes('application/json')) throw new Error('Respons server tidak valid.');
+    const res=await fetch(`${API}?action=${encodeURIComponent(action)}${query?`&${query}`:''}`,{method,headers,body:method==='GET'?null:payload,credentials:'same-origin',cache:'no-store'});
+    const ct=res.headers.get('content-type')||'';
+    if(res.status===401){location.replace('../login.html?return=admin/');throw new Error('Sesi telah berakhir. Silakan masuk kembali.')}
+    if(!ct.includes('application/json')) throw new Error('Respons server tidak valid.');
     const data=await res.json();
     if(Array.isArray(data.permissions)){state.permissions=data.permissions;if(data.role&&state.admin)state.admin.role=data.role;if(state.admin&&typeof applyAccessUi==='function')applyAccessUi()}
     if(!res.ok||!data.success)throw new Error(data.message||'Permintaan gagal.'); return data;
   }
-  function toast(message,error=false){const el=document.createElement('div');el.className=`toast${error?' error':''}`;el.textContent=message;$('#toastRegion').appendChild(el);setTimeout(()=>el.remove(),3500)}
+  function toast(message,error=false){const region=$('#toastRegion');if(!region)return;const el=document.createElement('div');el.className=`toast${error?' error':''}`;el.textContent=message;region.appendChild(el);setTimeout(()=>el.remove(),3500)}
   function setBrand(settings={}){const name=settings.village_name||'Portal Gampong',mark=initials(settings.village_short_name||name);if($('#adminBrandName'))$('#adminBrandName').textContent=name;if($('#adminBrandMark'))$('#adminBrandMark').textContent=mark;document.title=`Dashboard Admin · ${name}`}
 
   const viewTitles={dashboard:'Dashboard',requests:'Pengajuan Surat',complaints:'Pengaduan',settings:'Identitas & Tampilan',officials:'Perangkat Gampong',institutions:'Lembaga Gampong',population:'Statistik Penduduk',services:'Layanan Publik',posts:'Berita & Pengumuman',agendas:'Agenda',faqs:'FAQ',umkm:'UMKM',galleries:'Galeri',budget:'APBG',projects:'Pembangunan',quicklinks:'Akses Cepat',social:'Sosial Media',external:'Tautan Eksternal',sources:'Sumber Data',areas:'Wilayah & Dusun',boundaries:'Batas Wilayah',facilities:'Fasilitas Publik',milestones:'Timeline Gampong',mosque_management:'Pengurus BKM',mosque_programs:'Program Masjid',mosque_facilities:'Fasilitas Masjid',users:'Pengguna Admin',citizens:'Pengguna Warga',audit:'Audit Log',security:'Keamanan'};
@@ -44,6 +47,11 @@
   const roleLabels={superadmin:'Super Admin',admin:'Admin Konten',operator:'Operator Pelayanan',user:'Warga / User'};
   const hasPermission=p=>state.permissions.includes(p);
   const canView=view=>!viewPermissions[view]||hasPermission(viewPermissions[view]);
+  const navIcons={dashboard:'layout-dashboard',requests:'file-check-2',complaints:'message-square-warning',settings:'sliders-horizontal',officials:'users-round',institutions:'landmark',areas:'map',boundaries:'route',facilities:'building-2',population:'chart-no-axes-combined',mosque_management:'users',mosque_programs:'calendar-days',mosque_facilities:'warehouse',milestones:'history',services:'file-text',posts:'newspaper',agendas:'calendar-check-2',faqs:'circle-help',umkm:'store',galleries:'images',budget:'badge-dollar-sign',projects:'construction',quicklinks:'panels-top-left',social:'share-2',external:'external-link',sources:'database',users:'shield-user',citizens:'contact-round',audit:'scroll-text',security:'shield-check'};
+  function decorateAdminNav(){
+    $$('#adminNav .nav-item').forEach(btn=>{if(btn.querySelector('svg,[data-lucide]'))return;const name=navIcons[btn.dataset.view]||'circle';const label=btn.textContent.trim();btn.innerHTML=`<i data-lucide="${name}"></i><span>${esc(label)}</span>`});
+    if(window.lucide)window.lucide.createIcons();
+  }
   function applyAccessUi(){
     $$('#adminNav .nav-item').forEach(btn=>btn.classList.toggle('hidden',!canView(btn.dataset.view)));
     const exportLink=$('#exportPublicLink');if(exportLink)exportLink.classList.toggle('hidden',!hasPermission('export.public'));
@@ -88,8 +96,9 @@
   }
   $('#logoutButton').addEventListener('click',async()=>{try{await api('admin.logout',{method:'POST'});location.reload()}catch(err){toast(err.message,true)}});
   const sidebar=$('#sidebar'),sidebarScrim=$('#sidebarScrim');
-  function setSidebar(open){sidebar.classList.toggle('open',!!open);if(sidebarScrim)sidebarScrim.classList.toggle('open',!!open);document.body.classList.toggle('sidebar-open',!!open)}
-  $('#sidebarToggle').addEventListener('click',()=>setSidebar(!sidebar.classList.contains('open')));
+  function setSidebar(open){if(!sidebar)return;const next=!!open&&innerWidth<1020;sidebar.classList.toggle('open',next);if(sidebarScrim){sidebarScrim.classList.toggle('open',next);sidebarScrim.setAttribute('aria-hidden',String(!next))}document.body.classList.toggle('sidebar-open',next);const toggle=$('#sidebarToggle');if(toggle)toggle.setAttribute('aria-expanded',String(next));if(next){const active=$('#adminNav .nav-item.active');if(active)requestAnimationFrame(()=>active.scrollIntoView({block:'nearest'}))}}
+  $('#sidebarToggle')?.addEventListener('click',()=>setSidebar(!sidebar?.classList.contains('open')));
+  addEventListener('resize',()=>{if(innerWidth>=1020)setSidebar(false)},{passive:true});
   if(sidebarScrim)sidebarScrim.addEventListener('click',()=>setSidebar(false));
   const adminThemeButton=$('#adminThemeButton');if(adminThemeButton)adminThemeButton.addEventListener('click',toggleTheme);
   $$('#adminNav .nav-item').forEach(btn=>btn.addEventListener('click',()=>go(btn.dataset.view)));$$('[data-go]').forEach(btn=>btn.addEventListener('click',()=>go(btn.dataset.go)));
@@ -135,5 +144,8 @@
   $('#passwordForm').addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(e.currentTarget);if(fd.get('new_password')!==fd.get('confirm_password')){toast('Konfirmasi password tidak sama.',true);return}try{await api('admin.change-password',{method:'POST',body:{current_password:fd.get('current_password'),new_password:fd.get('new_password')}});e.currentTarget.reset();toast('Password berhasil diubah.')}catch(err){toast(err.message,true)}});
 
   function openDrawer(){const d=$('#drawer');d.classList.remove('hidden');d.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}function closeDrawer(){const d=$('#drawer');d.classList.add('hidden');d.setAttribute('aria-hidden','true');document.body.style.overflow=''}$$('[data-drawer-close]').forEach(el=>el.addEventListener('click',closeDrawer));document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();setSidebar(false)}});
+  decorateAdminNav();
+  const adminNav=$('#adminNav');if(adminNav)adminNav.scrollTop=0;
+  if(window.lucide)window.lucide.createIcons();
   bootstrap();
 })();

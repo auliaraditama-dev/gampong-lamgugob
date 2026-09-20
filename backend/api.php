@@ -19,7 +19,8 @@ if ($method === 'OPTIONS') {
 
 function slugify(string $value): string
 {
-    $value = mb_strtolower(trim($value));
+    $value = trim($value);
+    $value = function_exists('mb_strtolower') ? mb_strtolower($value, 'UTF-8') : strtolower($value);
     $value = preg_replace('/[^\pL\pN]+/u', '-', $value) ?? '';
     $value = trim($value, '-');
     return $value !== '' ? $value : bin2hex(random_bytes(5));
@@ -505,7 +506,13 @@ function updateWorkflow(): never
     $allowed = $kind === 'complaints' ? ['new','reviewed','in_progress','resolved','closed'] : ['pending','verified','processing','completed','rejected'];
     $table = $kind === 'complaints' ? 'complaints' : 'service_requests';
     if ($id < 1 || !in_array($status, $allowed, true)) jsonResponse(['success' => false, 'message' => 'Data status tidak valid.'], 422);
-    db()->prepare("UPDATE {$table} SET status=?,admin_note=?,updated_at=NOW() WHERE id=?")->execute([$status, $note, $id]);
+    $stmt = db()->prepare("UPDATE {$table} SET status=?,admin_note=?,updated_at=NOW() WHERE id=?");
+    $stmt->execute([$status, $note, $id]);
+    if ($stmt->rowCount() < 1) {
+        $check = db()->prepare("SELECT id FROM {$table} WHERE id=? LIMIT 1");
+        $check->execute([$id]);
+        if (!$check->fetchColumn()) jsonResponse(['success' => false, 'message' => 'Data pelayanan tidak ditemukan.'], 404);
+    }
     adminAudit('update-status', $table, $id, ['status' => $status]);
     jsonResponse(['success' => true]);
 }
@@ -536,6 +543,34 @@ function cmsMap(): array
         'mosque_programs' => ['table'=>'mosque_programs','fields'=>['title','category','schedule_text','description','last_verified_at','verification_status','source_url','sort_order','is_published'],'boolean'=>['is_published'],'order'=>'sort_order,id','long'=>['description']],
         'mosque_facilities' => ['table'=>'mosque_facilities','fields'=>['name','description','last_verified_at','verification_status','source_url','sort_order','is_published'],'boolean'=>['is_published'],'order'=>'sort_order,id','long'=>['description']],
     ];
+}
+
+function cmsRequiredFields(string $type): array
+{
+    return [
+        'officials' => ['name','position'],
+        'institutions' => ['name'],
+        'services' => ['name','category'],
+        'population' => ['stat_key','label'],
+        'posts' => ['type','title'],
+        'agendas' => ['title','start_at'],
+        'umkm' => ['name','category'],
+        'galleries' => ['title','image_url'],
+        'budget' => ['budget_year','field_name'],
+        'projects' => ['title'],
+        'faqs' => ['question','answer'],
+        'quicklinks' => ['title','url'],
+        'social' => ['platform','url'],
+        'external' => ['label','url'],
+        'sources' => ['title'],
+        'areas' => ['name','area_type'],
+        'boundaries' => ['direction','neighbor'],
+        'facilities' => ['name','category'],
+        'milestones' => ['event_year','title'],
+        'mosque_management' => ['position','name'],
+        'mosque_programs' => ['title'],
+        'mosque_facilities' => ['name'],
+    ][$type] ?? [];
 }
 
 function cmsList(): never
@@ -579,9 +614,21 @@ function cmsSave(): never
         $values[$field] = $value;
     }
 
-    if ($type === 'services' && empty($values['name'])) jsonResponse(['success'=>false,'message'=>'Nama layanan wajib diisi.'],422);
-    if ($type === 'population' && empty($values['stat_key'])) jsonResponse(['success'=>false,'message'=>'Kunci statistik wajib diisi.'],422);
     if (!$values) jsonResponse(['success' => false, 'message' => 'Tidak ada data untuk disimpan.'], 422);
+    if (in_array($type, ['posts','milestones'], true) && empty($values['slug'])) $values['slug'] = slugify((string) ($data['title'] ?? '')) . '-' . substr(bin2hex(random_bytes(3)), 0, 6);
+    if ($type === 'posts' && isset($values['type']) && !in_array($values['type'], ['news','announcement'], true)) jsonResponse(['success' => false, 'message' => 'Tipe konten tidak valid.'], 422);
+    if ($type === 'areas' && isset($values['area_type']) && !in_array($values['area_type'], ['dusun','ulee_jurong'], true)) jsonResponse(['success' => false, 'message' => 'Tipe wilayah tidak valid.'], 422);
+    if ($type === 'boundaries' && isset($values['direction']) && !in_array($values['direction'], ['Utara','Selatan','Barat','Timur'], true)) jsonResponse(['success' => false, 'message' => 'Arah batas wilayah tidak valid.'], 422);
+    if (isset($values['verification_status']) && !in_array($values['verification_status'], ['verified','historical','needs_confirmation'], true)) jsonResponse(['success' => false, 'message' => 'Status validasi tidak valid.'], 422);
+    foreach (cmsRequiredFields($type) as $required) {
+        $value = $values[$required] ?? $data[$required] ?? null;
+        if ($value === null || (is_string($value) && trim($value) === '')) jsonResponse(['success' => false, 'message' => 'Field wajib belum lengkap.'], 422);
+    }
+    if (isset($values['progress_percent'])) $values['progress_percent'] = max(0, min(100, (float) $values['progress_percent']));
+    foreach (['budget_amount','realization_amount','stat_value'] as $numericField) if (isset($values[$numericField])) $values[$numericField] = max(0, (float) $values[$numericField]);
+    foreach (['population','budget_year','data_year','event_year'] as $integerField) if (isset($values[$integerField])) $values[$integerField] = max(0, (int) $values[$integerField]);
+    if (!empty($values['start_at']) && !empty($values['end_at']) && strtotime((string) $values['end_at']) < strtotime((string) $values['start_at'])) jsonResponse(['success' => false, 'message' => 'Waktu selesai tidak boleh sebelum waktu mulai.'], 422);
+    if (!empty($values['start_date']) && !empty($values['end_date']) && strtotime((string) $values['end_date']) < strtotime((string) $values['start_date'])) jsonResponse(['success' => false, 'message' => 'Tanggal selesai tidak boleh sebelum tanggal mulai.'], 422);
 
     $pdo = db();
     $pdo->beginTransaction();
@@ -590,6 +637,11 @@ function cmsSave(): never
             $set = implode(',', array_map(fn($field) => "{$field}=?", array_keys($values)));
             $stmt = $pdo->prepare("UPDATE {$cfg['table']} SET {$set},updated_at=NOW() WHERE id=?");
             $stmt->execute([...array_values($values), $id]);
+            if ($stmt->rowCount() < 1) {
+                $check = $pdo->prepare("SELECT id FROM {$cfg['table']} WHERE id=? LIMIT 1");
+                $check->execute([$id]);
+                if (!$check->fetchColumn()) jsonResponse(['success' => false, 'message' => 'Data yang akan diperbarui tidak ditemukan.'], 404);
+            }
             $entityId = $id;
             $actionName = 'update';
         } else {
@@ -628,7 +680,9 @@ function cmsDelete(): never
     $map = cmsMap();
     if (!isset($map[$type]) || $id < 1) jsonResponse(['success' => false, 'message' => 'Data tidak valid.'], 422);
     $table = $map[$type]['table'];
-    db()->prepare("DELETE FROM {$table} WHERE id=?")->execute([$id]);
+    $stmt = db()->prepare("DELETE FROM {$table} WHERE id=?");
+    $stmt->execute([$id]);
+    if ($stmt->rowCount() < 1) jsonResponse(['success' => false, 'message' => 'Data tidak ditemukan.'], 404);
     adminAudit('delete', $table, $id);
     jsonResponse(['success' => true]);
 }
@@ -660,12 +714,17 @@ function settingsSave(): never
     $payload = bodyJson();
     $settings = is_array($payload['settings'] ?? null) ? $payload['settings'] : [];
     $allowed = settingKeys();
-    $stmt = db()->prepare('INSERT INTO settings (setting_key,setting_value) VALUES (?,?) ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value)');
+    $cleaned = [];
     foreach ($settings as $key => $value) {
         if (!in_array($key, $allowed, true)) continue;
         $max = in_array($key, ['profile_history','vision','mission','profile_values','profile_commitment','complaint_categories','mosque_history','mosque_data_note','data_disclaimer','administrative_map_note'], true) ? 30000 : 5000;
-        $stmt->execute([$key, cleanText($value, $max)]);
+        $cleaned[$key] = cleanText($value, $max);
     }
+    if (isset($cleaned['office_email']) && $cleaned['office_email'] !== '' && !filter_var($cleaned['office_email'], FILTER_VALIDATE_EMAIL)) jsonResponse(['success' => false, 'message' => 'Format email kantor tidak valid.'], 422);
+    if (isset($cleaned['ticket_prefix']) && $cleaned['ticket_prefix'] !== '' && !preg_match('/^[A-Za-z0-9]{2,6}$/', $cleaned['ticket_prefix'])) jsonResponse(['success' => false, 'message' => 'Prefix tiket harus 2–6 huruf/angka.'], 422);
+    foreach (['area_km2','district_area_percent'] as $numberKey) if (isset($cleaned[$numberKey]) && $cleaned[$numberKey] !== '' && (!is_numeric($cleaned[$numberKey]) || (float) $cleaned[$numberKey] < 0)) jsonResponse(['success' => false, 'message' => 'Nilai angka pada pengaturan tidak valid.'], 422);
+    $stmt = db()->prepare('INSERT INTO settings (setting_key,setting_value) VALUES (?,?) ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value)');
+    foreach ($cleaned as $key => $value) $stmt->execute([$key, $value]);
     adminAudit('update', 'settings');
     jsonResponse(['success' => true]);
 }
@@ -713,6 +772,7 @@ function downloadPrivateFile(): never
 {
     requirePermission('workflow.download');
     $id = (int) ($_GET['id'] ?? 0);
+    if ($id < 1) { http_response_code(404); exit('File tidak ditemukan'); }
     $stmt = db()->prepare('SELECT file_stored_name,file_original_name,file_mime FROM service_requests WHERE id=? LIMIT 1');
     $stmt->execute([$id]);
     $row = $stmt->fetch();
@@ -720,7 +780,7 @@ function downloadPrivateFile(): never
     $path = __DIR__ . '/storage/private/' . basename($row['file_stored_name']);
     if (!is_file($path)) { http_response_code(404); exit('File tidak ditemukan'); }
     header('Content-Type: ' . ($row['file_mime'] ?: 'application/octet-stream'));
-        $downloadName = preg_replace('/[^A-Za-z0-9._-]/', '_', (string) ($row['file_original_name'] ?: 'dokumen')) ?: 'dokumen';
+    $downloadName = preg_replace('/[^A-Za-z0-9._-]/', '_', (string) ($row['file_original_name'] ?: 'dokumen')) ?: 'dokumen';
     header("Content-Disposition: attachment; filename=\"{$downloadName}\"; filename*=UTF-8''" . rawurlencode((string) ($row['file_original_name'] ?: 'dokumen')));
     header('Content-Length: ' . filesize($path));
     header('X-Content-Type-Options: nosniff');
@@ -764,8 +824,18 @@ function adminUserSave(): never
     try {
         if ($id > 0) {
             if ($password !== '' && ($passwordError = passwordPolicyError($password)) !== null) jsonResponse(['success'=>false,'message'=>$passwordError],422);
-            if ($password !== '') db()->prepare('UPDATE admins SET name=?,email=?,role=?,password_hash=? WHERE id=?')->execute([$name,$email,$role,password_hash($password,PASSWORD_DEFAULT),$id]);
-            else db()->prepare('UPDATE admins SET name=?,email=?,role=? WHERE id=?')->execute([$name,$email,$role,$id]);
+            if ($password !== '') {
+                $update = db()->prepare('UPDATE admins SET name=?,email=?,role=?,password_hash=? WHERE id=?');
+                $update->execute([$name,$email,$role,password_hash($password,PASSWORD_DEFAULT),$id]);
+            } else {
+                $update = db()->prepare('UPDATE admins SET name=?,email=?,role=? WHERE id=?');
+                $update->execute([$name,$email,$role,$id]);
+            }
+            if ($update->rowCount() < 1) {
+                $exists = db()->prepare('SELECT id FROM admins WHERE id=? LIMIT 1');
+                $exists->execute([$id]);
+                if (!$exists->fetchColumn()) jsonResponse(['success'=>false,'message'=>'Akun admin tidak ditemukan.'],404);
+            }
             if ($id === (int)$current['id']) $_SESSION['admin'] = ['id'=>$id,'name'=>$name,'email'=>$email,'role'=>$role];
             adminAudit('update','admin',$id);
         } else {
@@ -790,7 +860,9 @@ function adminUserDelete(): never
     $superCount = (int) db()->query("SELECT COUNT(*) FROM admins WHERE role='superadmin'")->fetchColumn();
     $stmt = db()->prepare('SELECT role FROM admins WHERE id=?'); $stmt->execute([$id]);
     if ($stmt->fetchColumn()==='superadmin' && $superCount <= 1) jsonResponse(['success'=>false,'message'=>'Minimal satu superadmin harus tersedia.'],422);
-    db()->prepare('DELETE FROM admins WHERE id=?')->execute([$id]);
+    $delete = db()->prepare('DELETE FROM admins WHERE id=?');
+    $delete->execute([$id]);
+    if ($delete->rowCount() < 1) jsonResponse(['success'=>false,'message'=>'Akun admin tidak ditemukan.'],404);
     adminAudit('delete','admin',$id);
     jsonResponse(['success'=>true]);
 }
@@ -845,11 +917,12 @@ function adminCitizenDelete(): never
     $data = bodyJson();
     $id = (int) ($data['id'] ?? 0);
     if ($id < 1) jsonResponse(['success' => false, 'message' => 'Akun warga tidak valid.'], 422);
-    db()->prepare('DELETE FROM users WHERE id=?')->execute([$id]);
+    $delete = db()->prepare('DELETE FROM users WHERE id=?');
+    $delete->execute([$id]);
+    if ($delete->rowCount() < 1) jsonResponse(['success' => false, 'message' => 'Akun warga tidak ditemukan.'], 404);
     adminAudit('delete', 'user', $id);
     jsonResponse(['success' => true]);
 }
-
 
 function auditList(): never
 {
@@ -866,6 +939,21 @@ function exportPublicJson(): never
     header('Content-Disposition: attachment; filename="portal-gampong-export-' . date('Ymd-His') . '.json"');
     echo json_encode(['exported_at'=>date(DATE_ATOM),'data'=>$data],JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
     exit;
+}
+
+$routeMethods = [
+    'content'=>'GET','service-request'=>'POST','complaint'=>'POST','status'=>'GET',
+    'auth.register'=>'POST','auth.login'=>'POST','auth.me'=>'GET','auth.logout'=>'POST',
+    'user.account'=>'GET','user.profile-save'=>'POST','user.change-password'=>'POST',
+    'admin.login'=>'POST','admin.me'=>'GET','admin.logout'=>'POST','admin.dashboard'=>'GET',
+    'admin.workflow-list'=>'GET','admin.workflow-update'=>'POST','admin.cms-list'=>'GET','admin.cms-save'=>'POST','admin.cms-delete'=>'POST',
+    'admin.settings-get'=>'GET','admin.settings-save'=>'POST','admin.change-password'=>'POST','admin.media-upload'=>'POST','admin.download'=>'GET',
+    'admin.users-list'=>'GET','admin.user-save'=>'POST','admin.user-delete'=>'POST','admin.citizens-list'=>'GET','admin.citizen-save'=>'POST',
+    'admin.citizen-reset-password'=>'POST','admin.citizen-delete'=>'POST','admin.audit-list'=>'GET','admin.export'=>'GET',
+];
+if (isset($routeMethods[$action]) && $routeMethods[$action] !== $method) {
+    header('Allow: ' . $routeMethods[$action]);
+    jsonResponse(['success' => false, 'message' => 'Method tidak diizinkan.'], 405);
 }
 
 try {
@@ -905,7 +993,7 @@ try {
         case 'admin.audit-list': if ($method === 'GET') auditList(); break;
         case 'admin.export': if ($method === 'GET') exportPublicJson(); break;
     }
-    jsonResponse(['success' => false, 'message' => 'Endpoint tidak ditemukan atau method tidak diizinkan.'], 404);
+    jsonResponse(['success' => false, 'message' => 'Endpoint tidak ditemukan.'], 404);
 } catch (PDOException $e) {
     $message = ($config['app_env'] ?? 'production') === 'local' ? $e->getMessage() : 'Terjadi kesalahan database.';
     jsonResponse(['success' => false, 'message' => $message], 500);

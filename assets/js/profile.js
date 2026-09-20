@@ -14,13 +14,18 @@
     const d=new Date(String(value).replace(' ','T'));
     return Number.isNaN(d.getTime())?String(value):new Intl.DateTimeFormat('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(d);
   };
-  function icons(){if(window.lucide)window.lucide.createIcons()}
+  function icons(){if(window.lucide?.createIcons)window.lucide.createIcons()}
+  function safeMediaUrl(value){
+    const raw=String(value||'').trim();
+    if(!raw)return '';
+    try{const url=new URL(raw,location.href);return ['http:','https:'].includes(url.protocol)?url.href:''}catch{return ''}
+  }
 
   async function api(action,options={}){
     const method=String(options.method||'GET').toUpperCase();
     const headers=new Headers(options.headers||{});
     if(state.csrf&&method!=='GET')headers.set('X-CSRF-Token',state.csrf);
-    const response=await fetch(`${API}?action=${encodeURIComponent(action)}`,{credentials:'same-origin',...options,method,headers});
+    const response=await fetch(`${API}?action=${encodeURIComponent(action)}`,{credentials:'same-origin',cache:'no-store',...options,method,headers});
     let result;
     try{result=await response.json()}catch{throw new Error('Respons server tidak valid.')}
     if(!response.ok||!result.success)throw new Error(result.message||'Permintaan gagal.');
@@ -32,6 +37,7 @@
     const el=document.createElement('div');
     el.className=`toast ${type==='error'?'error':''}`;
     el.textContent=message;
+    if(!region)return;
     region.appendChild(el);
     setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),220)},4200);
   }
@@ -42,7 +48,7 @@
     if(persist)localStorage.setItem('gampong-theme',next);
     const b=$('#pageThemeButton');
     if(b){b.innerHTML=`<i data-lucide="${next==='dark'?'sun':'moon'}"></i>`;b.title=next==='dark'?'Gunakan tema terang':'Gunakan tema gelap'}
-    const meta=$('meta[name="theme-color"]');if(meta)meta.content=next==='dark'?'#09130f':'#087352';
+    const meta=$('meta[name="theme-color"]');if(meta)meta.content=next==='dark'?'#172a23':'#2d735b';
     icons();
   }
 
@@ -55,7 +61,8 @@
       $('#profileBrandName').textContent=name;
       $('#profileBrandLocation').textContent=location||'Akun Warga';
       const mark=$('#profileBrandMark');
-      if(s.logo_url)mark.innerHTML=`<img src="${esc(s.logo_url)}" alt="Logo ${esc(name)}">`;
+      const logo=safeMediaUrl(s.logo_url);
+      if(logo)mark.innerHTML=`<img src="${esc(logo)}" alt="Logo ${esc(name)}">`;
       else mark.textContent=initials(s.village_short_name||name);
       document.title=`Akun Saya · ${name}`;
     }catch(_){}
@@ -74,7 +81,7 @@
     $('#profileSummaryGrid').innerHTML=`
       <article class="profile-summary-card"><small>Pengajuan</small><strong>${state.requests.length}</strong></article>
       <article class="profile-summary-card"><small>Pengaduan</small><strong>${state.complaints.length}</strong></article>
-      <article class="profile-summary-card"><small>Status Akun</small><strong>${isVerified?'Verified':'User'}</strong></article>`;
+      <article class="profile-summary-card"><small>Status Akun</small><strong>${isVerified?'Terverifikasi':'Aktif'}</strong></article>`;
 
     const form=$('#profilePageForm');
     form.elements.name.value=p.name||'';

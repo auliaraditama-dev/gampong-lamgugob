@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b6b4f">
+  <meta name="theme-color" content="#2d735b">
   <meta name="color-scheme" content="light dark">
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
   <script>
@@ -12,7 +12,7 @@
         const saved=localStorage.getItem('gampong-theme');
         const theme=saved==='dark'||saved==='light'?saved:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
         document.documentElement.dataset.theme=theme;
-        document.querySelector('meta[name="theme-color"]').setAttribute('content',theme==='dark'?'#09130f':'#087352');
+        document.querySelector('meta[name="theme-color"]').setAttribute('content',theme==='dark'?'#172a23':'#2d735b');
       }catch(_){}
     })();
   </script>
@@ -39,9 +39,13 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css?v=20260916.4">
   <link rel="stylesheet" href="assets/css/redesign.css?v=20260916.4">
+  <link rel="stylesheet" href="assets/css/jawa-inspired.css?v=20260920.1">
+  <link rel="stylesheet" href="assets/css/eye-comfort.css?v=20260920.2">
+  <link rel="stylesheet" href="assets/css/navbar-fix.css?v=20260920.3">
   <link rel="manifest" href="manifest.php">
+  <link rel="stylesheet" href="assets/css/stability.css?v=20260920.4">
 </head>
-<body>
+<body class="portal-jawa-inspired">
   <a class="skip-link" href="#main">Lewati ke konten utama</a>
 
   <div class="topbar">
@@ -68,14 +72,14 @@
         </span>
       </a>
       <nav class="desktop-nav" aria-label="Navigasi utama">
-        <a href="#beranda" class="nav-link active">Beranda</a>
-        <a href="#profil" class="nav-link">Profil</a>
-        <a href="#layanan" class="nav-link">Layanan</a>
-        <a href="#data" class="nav-link">Data</a>
-        <a href="#transparansi" class="nav-link">Transparansi</a>
-        <a href="#berita" class="nav-link">Berita</a>
-        <a href="#galeri" class="nav-link">Galeri</a>
-        <a href="#kontak" class="nav-link">Kontak</a>
+        <a href="#beranda" class="nav-link active"><i data-lucide="house"></i><span>Beranda</span></a>
+        <a href="#profil" class="nav-link"><i data-lucide="landmark"></i><span>Profil</span></a>
+        <a href="#layanan" class="nav-link"><i data-lucide="file-check-2"></i><span>Layanan</span></a>
+        <a href="#data" class="nav-link"><i data-lucide="chart-no-axes-combined"></i><span>Data</span></a>
+        <a href="#transparansi" class="nav-link"><i data-lucide="badge-dollar-sign"></i><span>Transparansi</span></a>
+        <a href="#berita" class="nav-link"><i data-lucide="newspaper"></i><span>Berita</span></a>
+        <a href="#galeri" class="nav-link"><i data-lucide="images"></i><span>Galeri</span></a>
+        <a href="#kontak" class="nav-link"><i data-lucide="map-pin"></i><span>Kontak</span></a>
       </nav>
       <div class="nav-actions">
         <div class="auth-nav" id="guestAuthNav">
@@ -88,12 +92,12 @@
         </div>
         <button class="icon-button" id="searchButton" aria-label="Cari"><i data-lucide="search"></i></button>
         <button class="icon-button" id="themeButton" aria-label="Ubah tema"><i data-lucide="moon"></i></button>
-        <button class="icon-button menu-button" id="menuButton" aria-label="Buka menu"><i data-lucide="menu"></i></button>
+        <button class="icon-button menu-button" id="menuButton" aria-label="Buka menu" aria-expanded="false" aria-controls="mobileMenu"><i data-lucide="menu"></i></button>
       </div>
     </div>
     <div class="mobile-menu" id="mobileMenu">
       <div class="container mobile-menu-inner">
-        <a href="#beranda">Beranda</a><a href="#profil">Profil Gampong</a><a href="#layanan">Layanan Publik</a><a href="#data">Data Gampong</a><a href="#transparansi">Transparansi</a><a href="#berita">Berita & Agenda</a><a href="#galeri">Galeri</a><a href="#kontak">Kontak</a>
+        <a href="#beranda"><i data-lucide="house"></i> Beranda</a><a href="#profil"><i data-lucide="landmark"></i> Profil Gampong</a><a href="#layanan"><i data-lucide="file-check-2"></i> Layanan Publik</a><a href="#data"><i data-lucide="chart-no-axes-combined"></i> Data Gampong</a><a href="#transparansi"><i data-lucide="badge-dollar-sign"></i> Transparansi</a><a href="#berita"><i data-lucide="newspaper"></i> Berita & Agenda</a><a href="#galeri"><i data-lucide="images"></i> Galeri</a><a href="#kontak"><i data-lucide="map-pin"></i> Kontak</a>
         <div class="mobile-auth-row" id="mobileGuestAuth"><a id="mobileLoginButton" href="login.html"><i data-lucide="log-in"></i> Masuk</a><a id="mobileRegisterButton" href="register.html"><i data-lucide="user-plus"></i> Daftar Warga</a></div>
         <div class="mobile-auth-row hidden" id="mobileMemberAuth"><a id="mobileAccountButton" href="profile.html"><i data-lucide="circle-user-round"></i> <span id="mobileAccountLabel">Akun Saya</span></a><button id="mobileLogoutButton"><i data-lucide="log-out"></i> Keluar</button></div>
       </div>
@@ -111,6 +115,8 @@
   <main id="main">
     <section class="hero" id="beranda">
       <div class="hero-bg" id="heroBg" aria-hidden="true"></div>
+      <div class="hero-orb one" aria-hidden="true"></div>
+      <div class="hero-orb two" aria-hidden="true"></div>
       <div class="container hero-grid">
         <div class="hero-copy reveal">
           <span class="eyebrow" id="heroEyebrow"><i data-lucide="landmark"></i> Portal Gampong</span>
@@ -136,6 +142,7 @@
           </div>
         </aside>
       </div>
+      <a class="hero-scroll-cue" href="#profil" aria-label="Lanjut ke profil"><span>Jelajahi portal</span><i data-lucide="arrow-down"></i></a>
     </section>
 
     <section class="quick-access hidden-section" id="quickAccessSection">
@@ -291,7 +298,8 @@
   <div class="lightbox" id="lightbox" aria-hidden="true"><button class="icon-button lightbox-close" id="lightboxClose" aria-label="Tutup galeri"><i data-lucide="x"></i></button><img id="lightboxImage" src="" alt=""><p id="lightboxCaption"></p></div>
   <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
 
-  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-  <script src="assets/js/app.js?v=20260916.4"></script>
+  <script src="assets/js/icons.js?v=20260920.5"></script>
+  <script src="assets/js/app.js?v=20260920.5"></script>
+  <script src="assets/js/navbar-fit.js?v=20260920.5"></script>
 </body>
 </html>

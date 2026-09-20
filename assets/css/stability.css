@@ -1,0 +1,49 @@
+html{overflow-x:clip}
+body{max-width:100%;overflow-x:clip;text-rendering:optimizeLegibility}
+*,*::before,*::after{min-width:0}
+img,svg,video,canvas,iframe{max-width:100%}
+img{height:auto}
+.portal-icon{display:inline-block;width:1.15em;height:1.15em;flex:0 0 auto;vertical-align:-.16em;overflow:visible}
+button .portal-icon,a .portal-icon{pointer-events:none}
+h1,h2,h3,h4,h5,h6,p,li,dd,dt,strong,small,span,a,button,label,td,th{overflow-wrap:break-word;word-break:normal}
+input,select,textarea,button{max-width:100%}
+.container,.nav-wrap,.hero-grid,.section-heading,.profile-layout,.budget-layout,.contact-grid,.data-panels,.complaint-wrap,.footer-grid{min-width:0}
+.section-heading>*{min-width:0}
+.card-head,.panel-head{min-width:0}
+.text-button,.btn,.nav-auth-button,.icon-button{line-height:1.25}
+.desktop-nav .nav-link,.nav-actions,.auth-nav{min-width:0}
+.mobile-menu-inner a,.mobile-auth-row a,.mobile-auth-row button{display:flex;align-items:center;gap:10px}
+.service-card,.news-card,.leader-card,.info-panel,.umkm-card,.agenda-card,.development-card,.stat-card,.chart-card,.budget-summary,.story-card,.quick-card{min-width:0;overflow:hidden}
+.service-card h3,.news-card h3,.leader-card h3,.umkm-card h3,.agenda-card h3,.development-card h3{word-break:normal;hyphens:auto}
+.contact-list strong,.facts-list strong,.notice-item h3,.search-result strong{word-break:break-word}
+.table-wrap{max-width:100%;overflow:auto;-webkit-overflow-scrolling:touch}
+.data-table{width:100%}
+.modal-dialog,.search-dialog{overscroll-behavior:contain}
+.modal-dialog img,.article-content img{max-width:100%;height:auto}
+.article-content{overflow-wrap:break-word;word-break:normal}.article-content a,.source-link{overflow-wrap:anywhere}
+.hidden,.hidden-section{display:none!important}
+@media(max-width:900px){
+  .section-heading{gap:16px}
+  .contact-grid,.budget-layout,.profile-layout,.complaint-wrap{min-width:0}
+}
+@media(max-width:680px){
+  .section{overflow:clip}
+  .hero-actions,.contact-actions{width:100%}
+  .hero-actions .btn,.contact-actions .btn{max-width:100%}
+  .form-row,.account-form-row{grid-template-columns:minmax(0,1fr)!important}
+  .notice-item{grid-template-columns:auto minmax(0,1fr)!important}
+  .notice-item>svg{display:none}
+  .source-strip-inner{min-width:0}
+  .footer-grid>*{min-width:0}
+}
+@media(max-width:430px){
+  .btn{white-space:normal;text-align:center}
+  .modal,.search-modal{padding-inline:8px}
+  .modal-dialog,.search-dialog{width:100%;border-radius:18px}
+}
+
+.section-heading,.hero-actions,.contact-actions,.card-actions{flex-wrap:wrap}
+.hero-grid>*,.contact-grid>*{min-width:0}
+.btn,.icon-button,.text-button{align-items:center}
+.btn svg,.text-button svg,.icon-button svg{flex:0 0 auto}
+@media(max-width:560px){.hero-actions .btn,.contact-actions .btn{width:100%}.quick-card{min-height:72px}.section-heading h2{font-size:clamp(1.75rem,8vw,2.35rem)}.modal-dialog h2,.search-head h2{font-size:clamp(1.35rem,6.5vw,1.75rem)}}

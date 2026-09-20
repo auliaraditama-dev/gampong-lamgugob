@@ -5,6 +5,10 @@ requireAdmin();
 $allowed = [
     'admin.css' => ['path' => __DIR__ . '/assets/admin.css', 'type' => 'text/css; charset=utf-8'],
     'redesign.css' => ['path' => __DIR__ . '/assets/redesign.css', 'type' => 'text/css; charset=utf-8'],
+    'jawa-inspired.css' => ['path' => __DIR__ . '/assets/jawa-inspired.css', 'type' => 'text/css; charset=utf-8'],
+    'eye-comfort.css' => ['path' => __DIR__ . '/assets/eye-comfort.css', 'type' => 'text/css; charset=utf-8'],
+    'sidebar-fix.css' => ['path' => __DIR__ . '/assets/sidebar-fix.css', 'type' => 'text/css; charset=utf-8'],
+    'stability.css' => ['path' => __DIR__ . '/assets/stability.css', 'type' => 'text/css; charset=utf-8'],
     'admin.js' => ['path' => __DIR__ . '/assets/admin.js', 'type' => 'application/javascript; charset=utf-8'],
 ];
 $file = (string) ($_GET['file'] ?? '');

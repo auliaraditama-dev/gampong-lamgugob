@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#087352">
+  <meta name="theme-color" content="#2d735b">
   <meta name="color-scheme" content="light dark">
   <meta name="robots" content="noindex,nofollow">
   <script>
@@ -12,7 +12,7 @@
       const theme=saved==='dark'||saved==='light'?saved:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
       document.documentElement.dataset.theme=theme;
       const meta=document.querySelector('meta[name="theme-color"]');
-      if(meta)meta.setAttribute('content',theme==='dark'?'#09130f':'#087352');
+      if(meta)meta.setAttribute('content',theme==='dark'?'#172a23':'#2d735b');
     }catch(_){}})();
   </script>
   <title>Daftar Warga · Portal Gampong</title>
@@ -24,6 +24,9 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/redesign.css">
   <link rel="stylesheet" href="assets/css/account-pages.css">
+  <link rel="stylesheet" href="assets/css/jawa-account.css?v=20260920.1">
+  <link rel="stylesheet" href="assets/css/eye-comfort.css?v=20260920.2">
+  <link rel="stylesheet" href="assets/css/stability.css?v=20260920.4">
 </head>
 <body class="account-page" data-auth-page="register">
   <main class="auth-page-shell register-layout">
@@ -80,7 +83,7 @@
     </section>
   </main>
   <div id="toastRegion" class="toast-region" aria-live="polite"></div>
-  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-  <script src="assets/js/auth-pages.js"></script>
+  <script src="assets/js/icons.js?v=20260920.5"></script>
+  <script src="assets/js/auth-pages.js?v=20260920.5"></script>
 </body>
 </html>

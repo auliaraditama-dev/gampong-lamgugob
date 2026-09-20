@@ -979,6 +979,12 @@ gampong-lamgugob/
 
 ---
 
+## Eye Comfort UI
+
+Versi UI terbaru menggunakan warna solid dan tint lembut agar nyaman dipakai dalam waktu lama. Gradient dekoratif dikurangi, shadow dibuat lebih ringan, animasi non-esensial dikurangi, responsif diperkuat hingga layar mobile kecil, dan navbar otomatis menyesuaikan ruang saat ukuran teks diubah.
+
+Master data yang memiliki sumber dimasukkan melalui `backend/database/seed.sql`. Data yang belum terverifikasi tidak diisi secara fiktif dan tetap tersedia untuk dilengkapi melalui Dashboard Admin.
+
 # Instalasi Menggunakan Laragon
 
 ## Requirement
@@ -1849,3 +1855,45 @@ Data hanya ditampilkan pada portal publik apabila field `is_published` bernilai 
 ## Responsive production & peta administrasi
 
 Portal publik, halaman akun, artikel, dan dashboard admin menggunakan layout responsif untuk desktop, laptop, tablet, mobile, layar kecil, dan landscape. Peta Administrasi Gampong Lamgugob tersedia di section Wilayah dan dapat diperbesar melalui lightbox. Gambar peta, judul, sumber, dan catatan dapat diperbarui dari Admin → Identitas & Tampilan.
+
+---
+
+# UI/UX Jawa-Inspired untuk Lamgugob
+
+Versi ini menggunakan arah visual yang terinspirasi dari struktur UI Gampong Jawa yang diberikan sebagai referensi, tetapi tidak menyalin data, identitas, atau struktur backend project tersebut.
+
+Identitas Lamgugob tetap menggunakan seluruh renderer, API, database, RBAC, autentikasi warga, SEO, PWA, dan fitur administrasi yang sudah ada.
+
+Lapisan UI baru berada di:
+
+```text
+assets/css/jawa-inspired.css
+assets/css/jawa-account.css
+admin/assets/jawa-inspired.css
+```
+
+Karakter desain:
+
+```text
+Floating glass navigation
+Hero foto + overlay terang
+Quick access mengambang di bawah hero
+Hijau + navy sebagai identitas utama
+Aksen emas yang ringan
+Card dengan radius besar dan shadow lembut
+Section gradient yang tidak berlebihan
+Lucide icon tanpa emoticon
+Responsive desktop / tablet / mobile
+Light mode dan dark mode
+Reduced motion support
+```
+
+`style.css` dan `redesign.css` tetap dipertahankan sebagai fondasi kompatibilitas fitur lama. Stylesheet `jawa-inspired.css` dimuat paling akhir sebagai lapisan presentasi terbaru.
+
+Tidak ada perubahan pada prinsip data:
+
+```text
+Admin -> Database -> API -> Website
+```
+
+Konten Gampong Lamgugob tetap berasal dari data backend yang tersedia dan tidak diambil dari project referensi Gampong Jawa.

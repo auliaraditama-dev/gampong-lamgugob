@@ -1,8 +1,15 @@
-const CACHE_NAME = 'lamgugob-static-20260916-4';
+const CACHE_NAME = 'lamgugob-static-20260920-final-fix-4';
 const STATIC_ASSETS = [
   './assets/css/style.css?v=20260916.4',
   './assets/css/redesign.css?v=20260916.4',
-  './assets/js/app.js?v=20260916.4',
+  './assets/css/jawa-inspired.css?v=20260920.1',
+  './assets/css/jawa-account.css?v=20260920.1',
+  './assets/css/eye-comfort.css?v=20260920.2',
+  './assets/css/navbar-fix.css?v=20260920.3',
+  './assets/css/stability.css?v=20260920.4',
+  './assets/js/icons.js?v=20260920.5',
+  './assets/js/app.js?v=20260920.5',
+  './assets/js/navbar-fit.js?v=20260920.5',
   './assets/images/icon-192.png',
   './assets/images/icon-512.png',
   './assets/images/favicon-32.png',

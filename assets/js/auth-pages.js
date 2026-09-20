@@ -10,10 +10,15 @@
     return (parts.slice(0,2).map(v=>v[0]).join('')||'PG').toUpperCase();
   };
 
-  function icons(){ if(window.lucide) window.lucide.createIcons(); }
+  function icons(){if(window.lucide?.createIcons)window.lucide.createIcons();}
+  function safeMediaUrl(value){
+    const raw=String(value||'').trim();
+    if(!raw)return '';
+    try{const url=new URL(raw,location.href);return ['http:','https:'].includes(url.protocol)?url.href:''}catch{return ''}
+  }
 
   async function api(action,options={}){
-    const response=await fetch(`${API}?action=${encodeURIComponent(action)}`,{credentials:'same-origin',...options});
+    const response=await fetch(`${API}?action=${encodeURIComponent(action)}`,{credentials:'same-origin',cache:'no-store',...options});
     let result;
     try{result=await response.json()}catch{throw new Error('Respons server tidak valid.')}
     if(!response.ok||!result.success)throw new Error(result.message||'Permintaan gagal.');
@@ -37,15 +42,17 @@
       button.title=next==='dark'?'Gunakan tema terang':'Gunakan tema gelap';
     }
     const meta=$('meta[name="theme-color"]');
-    if(meta)meta.content=next==='dark'?'#09130f':'#087352';
+    if(meta)meta.content=next==='dark'?'#172a23':'#2d735b';
     icons();
   }
 
   function safeReturn(){
     const raw=new URLSearchParams(location.search).get('return')||'';
     if(!raw)return '';
-    if(raw.includes('://')||raw.startsWith('//')||raw.startsWith('javascript:'))return '';
-    return raw.replace(/^\/+/,'');
+    if(/[\x00-\x1f\x7f\\]/.test(raw)||raw.includes('://')||raw.startsWith('//')||/^javascript:/i.test(raw))return '';
+    const cleaned=raw.replace(/^\/+/,'');
+    if(cleaned.split('/').some(part=>part==='..'))return '';
+    return cleaned;
   }
 
   async function loadBrand(){
@@ -57,8 +64,9 @@
       $('#authBrandName').textContent=name;
       $('#authBrandLocation').textContent=location||(page==='register'?'Registrasi akun warga':'Website publik tetap dapat diakses sebagai guest');
       const mark=$('#authBrandMark');
-      if(s.logo_url){
-        mark.innerHTML=`<img src="${esc(s.logo_url)}" alt="Logo ${esc(name)}">`;
+      const logo=safeMediaUrl(s.logo_url);
+      if(logo){
+        mark.innerHTML=`<img src="${esc(logo)}" alt="Logo ${esc(name)}">`;
       }else{
         mark.textContent=initials(s.village_short_name||name);
       }

@@ -1,0 +1,54 @@
+html,body{max-width:100%;overflow-x:hidden}
+*,*::before,*::after{box-sizing:border-box;min-width:0}
+img,svg,video,canvas,iframe{max-width:100%}
+.portal-icon{display:inline-block;width:1.1em;height:1.1em;flex:0 0 auto;vertical-align:-.15em;overflow:visible}
+button .portal-icon,a .portal-icon{pointer-events:none}
+h1,h2,h3,h4,p,span,strong,small,label,td,th,a,button{overflow-wrap:break-word;word-break:normal}code{overflow-wrap:anywhere}
+.admin-main,.view,.panel,.form-panel,.panel-grid,.summary-grid,.setup-grid,.form-grid,.detail-grid{min-width:0;max-width:100%}
+.admin-header{gap:14px}
+.admin-header>div:nth-child(2){min-width:0}
+.admin-header h2,.admin-header .eyebrow{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-header-actions{min-width:0;max-width:55%;margin-left:auto}
+.admin-user{min-width:0;max-width:220px}
+.admin-user span,.admin-user small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.panel-head>div{min-width:0;flex:1 1 260px}
+.panel-head>.search-input,.panel-head>.btn,.panel-head>button{flex:0 1 auto}
+.summary-grid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))!important}
+.setup-grid{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))!important}
+.panel-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr))!important}
+.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.form-grid .span-2{grid-column:1/-1}
+input,select,textarea,button{max-width:100%;min-width:0}
+.search-input{width:min(100%,320px)}
+.table-wrap{width:100%;max-width:100%;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-inline:contain}
+.data-table{width:100%;min-width:760px;border-collapse:collapse}
+.data-table th,.data-table td{vertical-align:top;white-space:normal;word-break:break-word}
+.data-table .actions{display:flex;flex-wrap:wrap;gap:6px}
+.data-table code{display:block;max-width:320px;white-space:pre-wrap;word-break:break-all}
+.drawer-card{width:min(760px,100%);max-width:100%;max-height:100dvh;overflow:auto;overscroll-behavior:contain}
+.detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.detail.span{grid-column:1/-1}
+.detail strong,.detail a{word-break:break-word}
+.sidebar .portal-icon{width:17px;height:17px}
+.nav-item span{overflow-wrap:normal;word-break:normal}
+.sidebar-bottom a,.sidebar-bottom button{gap:8px}
+@media(max-width:760px){
+  .form-grid,.detail-grid{grid-template-columns:minmax(0,1fr)!important}
+  .form-grid .span-2,.detail.span{grid-column:auto}
+  .admin-header{grid-template-columns:auto minmax(0,1fr) auto}
+  .admin-header-actions{max-width:none}
+  .admin-user{display:none}
+  .panel{padding-inline:16px}
+  .panel-head>.search-input{flex:1 1 100%;width:100%}
+}
+@media(max-width:480px){
+  .admin-main{padding-inline:10px!important}
+  .admin-header{padding-inline:10px!important}
+  .summary-grid,.setup-grid{grid-template-columns:minmax(0,1fr)!important}
+  .panel{border-radius:16px}
+  .drawer-card{border-radius:0;width:100vw}
+}
+
+.panel-head h3,.panel-head p{max-width:100%}.btn,.nav-item,.sidebar-bottom a,.sidebar-bottom button{align-items:center}.btn svg,.nav-item svg,.sidebar-bottom svg{flex:0 0 auto}.form-panel label{min-width:0}.form-panel input,.form-panel select,.form-panel textarea{width:100%}
+@media(max-width:560px){.panel-head>.btn,.panel-head>button:not(.icon-btn){max-width:100%}.drawer-card .form-actions{display:grid;grid-template-columns:1fr}.drawer-card .form-actions .btn{width:100%}}

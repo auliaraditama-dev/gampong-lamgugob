@@ -1,0 +1,157 @@
+.portal-jawa-inspired .nav-wrap{
+  width:min(100%,1180px);
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding-inline:16px;
+}
+.portal-jawa-inspired .brand{
+  flex:0 1 236px;
+  min-width:180px;
+  max-width:250px;
+  margin-right:0;
+}
+.portal-jawa-inspired .brand>span:last-child{
+  min-width:0;
+  overflow:hidden;
+}
+.portal-jawa-inspired .brand strong,
+.portal-jawa-inspired .brand small{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.portal-jawa-inspired .desktop-nav{
+  flex:1 1 auto;
+  min-width:0;
+  justify-content:center;
+  overflow:hidden;
+  gap:0;
+}
+.portal-jawa-inspired .desktop-nav .nav-link{
+  flex:0 0 auto;
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:9px 7px;
+  white-space:nowrap;
+  font-size:.75rem;
+}
+.portal-jawa-inspired .desktop-nav .nav-link svg{
+  width:15px;
+  height:15px;
+  flex:0 0 auto;
+}
+.portal-jawa-inspired .nav-actions{
+  flex:0 0 auto;
+  min-width:max-content;
+  margin-left:0;
+  gap:6px;
+}
+.portal-jawa-inspired .auth-nav{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+}
+.portal-jawa-inspired .auth-nav.hidden{
+  display:none!important;
+}
+.portal-jawa-inspired .nav-auth-button{
+  white-space:nowrap;
+  flex:0 0 auto;
+  min-height:40px;
+  padding-inline:10px;
+}
+.portal-jawa-inspired .nav-actions>.icon-button{
+  flex:0 0 auto;
+}
+.nav-fit-compact.portal-jawa-inspired .nav-wrap{
+  gap:9px;
+  padding-inline:12px;
+}
+.nav-fit-compact.portal-jawa-inspired .brand{
+  flex-basis:198px;
+  min-width:165px;
+  max-width:205px;
+}
+.nav-fit-compact.portal-jawa-inspired .brand small{
+  font-size:.58rem;
+}
+.nav-fit-compact.portal-jawa-inspired .desktop-nav .nav-link{
+  padding:9px 6px;
+  font-size:.72rem;
+  gap:0;
+}
+.nav-fit-compact.portal-jawa-inspired .desktop-nav .nav-link svg{
+  display:none;
+}
+.nav-fit-compact.portal-jawa-inspired .nav-auth-button{
+  width:40px;
+  min-width:40px;
+  padding:0;
+}
+.nav-fit-compact.portal-jawa-inspired .nav-auth-button span{
+  display:none;
+}
+.nav-fit-compact.portal-jawa-inspired .auth-nav{
+  gap:5px;
+}
+.nav-fit-mobile.portal-jawa-inspired .desktop-nav,
+.nav-fit-mobile.portal-jawa-inspired .nav-actions .auth-nav{
+  display:none!important;
+}
+.nav-fit-mobile.portal-jawa-inspired .menu-button{
+  display:inline-grid!important;
+}
+.nav-fit-mobile.portal-jawa-inspired .nav-actions{
+  margin-left:auto;
+}
+.nav-fit-mobile.portal-jawa-inspired .brand{
+  flex:1 1 auto;
+  max-width:min(330px,calc(100vw - 190px));
+}
+.nav-fit-mobile.portal-jawa-inspired .brand small{
+  display:block;
+}
+@media(max-width:1380px){
+  .portal-jawa-inspired .nav-wrap{gap:10px;padding-inline:13px}
+  .portal-jawa-inspired .brand{flex-basis:210px;min-width:175px;max-width:215px}
+  .portal-jawa-inspired .desktop-nav .nav-link{padding-inline:6px;font-size:.72rem}
+  .portal-jawa-inspired .desktop-nav .nav-link svg{width:14px;height:14px}
+  .portal-jawa-inspired .nav-auth-button{padding-inline:9px}
+}
+@media(max-width:1220px){
+  .portal-jawa-inspired .desktop-nav .nav-link svg{display:none}
+  .portal-jawa-inspired .desktop-nav .nav-link{padding-inline:6px}
+  .portal-jawa-inspired .brand{flex-basis:190px;min-width:160px;max-width:195px}
+  .portal-jawa-inspired .brand small{font-size:.58rem}
+  .portal-jawa-inspired .nav-auth-button{width:40px;min-width:40px;padding:0}
+  .portal-jawa-inspired .nav-auth-button span{display:none}
+}
+@media(max-width:1080px){
+  .portal-jawa-inspired .desktop-nav{display:none}
+  .portal-jawa-inspired .nav-actions .auth-nav{display:none!important}
+  .portal-jawa-inspired .menu-button{display:inline-grid}
+  .portal-jawa-inspired .nav-actions{margin-left:auto}
+  .portal-jawa-inspired .brand{flex:1 1 auto;max-width:min(330px,calc(100vw - 190px))}
+}
+@media(max-width:680px){
+  .portal-jawa-inspired .site-header{width:calc(100% - 18px)}
+  .portal-jawa-inspired .nav-wrap{height:66px;padding-inline:9px;gap:7px}
+  .portal-jawa-inspired .brand{min-width:0;max-width:calc(100vw - 174px);gap:8px}
+  .portal-jawa-inspired .brand-mark{width:40px;height:44px;flex:0 0 auto}
+  .portal-jawa-inspired .brand strong{font-size:.82rem}
+  .portal-jawa-inspired .brand small{display:none}
+  .portal-jawa-inspired .nav-actions{gap:4px}
+  .portal-jawa-inspired .nav-actions>.icon-button{width:37px;height:37px}
+}
+@media(max-width:420px){
+  .portal-jawa-inspired .nav-wrap{padding-inline:7px}
+  .portal-jawa-inspired .brand{max-width:calc(100vw - 160px)}
+  .portal-jawa-inspired .brand strong{font-size:.76rem}
+  .portal-jawa-inspired .nav-actions>.icon-button{width:35px;height:35px;border-radius:10px}
+}

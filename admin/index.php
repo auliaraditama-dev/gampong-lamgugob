@@ -15,7 +15,7 @@ if (!$portalIdentity || ($portalIdentity['account_type'] ?? '') !== 'staff') {
   <script>(()=>{try{const s=localStorage.getItem('gampong-theme');const t=s==='dark'||s==='light'?s:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;document.querySelector('meta[name="theme-color"]').setAttribute('content',t==='dark'?'#09130f':'#087352')}catch(_){}})();</script>
   <title>Dashboard Admin · Portal Gampong</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="asset.php?file=admin.css"><link rel="stylesheet" href="asset.php?file=redesign.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="asset.php?file=admin.css"><link rel="stylesheet" href="asset.php?file=redesign.css"><link rel="stylesheet" href="asset.php?file=jawa-inspired.css"><link rel="stylesheet" href="asset.php?file=eye-comfort.css"><link rel="stylesheet" href="asset.php?file=sidebar-fix.css"><link rel="stylesheet" href="asset.php?file=stability.css">
 </head>
 <body>
   <div id="appView" class="app-shell">
@@ -43,7 +43,7 @@ if (!$portalIdentity || ($portalIdentity['account_type'] ?? '') !== 'staff') {
     </aside>
 
     <main class="admin-main">
-      <header class="admin-header"><button id="sidebarToggle" class="icon-button" aria-label="Buka menu">☰</button><div><p class="eyebrow">Dashboard Pengelola</p><h2 id="pageTitle">Dashboard</h2></div><div class="admin-header-actions"><button id="adminThemeButton" class="icon-button admin-theme-button" type="button" aria-label="Ubah tema">☾</button><div class="admin-user"><span id="adminName">Administrator</span><small id="adminRole"></small></div></div></header>
+      <header class="admin-header"><button id="sidebarToggle" class="icon-button" aria-label="Buka menu" aria-expanded="false" aria-controls="sidebar"><i data-lucide="menu"></i></button><div><p class="eyebrow">Dashboard Pengelola</p><h2 id="pageTitle">Dashboard</h2></div><div class="admin-header-actions"><button id="adminThemeButton" class="icon-button admin-theme-button" type="button" aria-label="Ubah tema"><i data-lucide="moon"></i></button><div class="admin-user"><span id="adminName">Administrator</span><small id="adminRole"></small></div></div></header>
 
       <section id="view-dashboard" class="view active"><div id="summaryCards" class="summary-grid"></div><article class="panel setup-panel" id="setupPanel"><div class="panel-head"><div><p class="eyebrow">Kesiapan Portal</p><h3>Checklist data publik</h3></div></div><div id="setupChecklist" class="setup-grid"></div></article><div class="panel-grid"><article class="panel"><div class="panel-head"><h3>Pengajuan Terbaru</h3><button class="text-button" data-go="requests">Lihat semua</button></div><div id="recentRequests"></div></article><article class="panel"><div class="panel-head"><h3>Pengaduan Terbaru</h3><button class="text-button" data-go="complaints">Lihat semua</button></div><div id="recentComplaints"></div></article></div></section>
       <section id="view-requests" class="view"><div class="panel"><div class="panel-head"><div><p class="eyebrow">Pelayanan</p><h3>Pengajuan Surat</h3></div><input id="requestSearch" class="search-input" placeholder="Cari tiket, nama, layanan..."></div><div id="requestsTable"></div></div></section>
@@ -79,6 +79,6 @@ if (!$portalIdentity || ($portalIdentity['account_type'] ?? '') !== 'staff') {
     </main>
   </div>
 
-  <div id="drawer" class="drawer hidden" aria-hidden="true"><div class="drawer-backdrop" data-drawer-close></div><div class="drawer-card"><button class="drawer-close" data-drawer-close>×</button><div id="drawerContent"></div></div></div>
-  <div id="toastRegion" class="toast-region"></div><script src="asset.php?file=admin.js"></script>
+  <div id="drawer" class="drawer hidden" aria-hidden="true"><div class="drawer-backdrop" data-drawer-close></div><div class="drawer-card"><button class="drawer-close" data-drawer-close aria-label="Tutup panel"><i data-lucide="x"></i></button><div id="drawerContent"></div></div></div>
+  <div id="toastRegion" class="toast-region"></div><script src="../assets/js/icons.js?v=20260920.5"></script><script src="asset.php?file=admin.js"></script>
 </body></html>
